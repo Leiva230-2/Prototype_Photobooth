@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your Photobooth Photos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#160F1E;
+    --curtain:#251A31;
+    --curtain-hi:#33253F;
+    --flash:#FF4D6D;
+    --mint:#5BE0C8;
+    --ink:#EDE6F2;
+    --ink-dim:#9E8FAD;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--void);color:var(--ink);
+    font-family:"Bricolage Grotesque",system-ui,-apple-system,sans-serif;
+    min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    padding:32px 20px 48px;gap:18px;
+  }
+  h1{font-size:20px;margin:0;font-weight:800;text-align:center}
+  .hint{font-size:13px;color:var(--ink-dim);text-align:center;line-height:1.5;max-width:340px;margin:0}
+  code{background:var(--curtain);padding:1px 6px;border-radius:5px;font-size:12px}
+
+  form{width:100%;max-width:300px;display:flex;flex-direction:column;gap:14px;margin-top:8px}
+  label{font-size:13px;color:var(--ink-dim);display:block;margin-bottom:6px}
+  input{
+    font:inherit;font-size:22px;letter-spacing:.14em;text-align:center;text-transform:uppercase;
+    background:var(--curtain);color:var(--ink);border:1px solid var(--curtain-hi);
+    border-radius:10px;padding:14px;width:100%;
+  }
+  input:focus{outline:2px solid var(--mint);outline-offset:2px}
+  button{
+    font:inherit;font-weight:700;font-size:16px;cursor:pointer;border:none;
+    border-radius:10px;padding:14px;background:var(--flash);color:#fff;
+  }
+  button:active{transform:translateY(1px)}
+
+  .media{width:100%;max-width:380px;display:flex;flex-direction:column;gap:16px;align-items:center}
+  .media img{border-radius:12px;border:1px solid var(--curtain-hi);background:var(--curtain);display:block}
+  #stripImg{width:auto;max-width:220px;max-height:66vh}
+  #gifImg{width:100%}
+
+  .downloads{width:100%;max-width:380px;display:flex;flex-direction:column;gap:10px}
+  .downloads a{
+    display:block;text-align:center;font-weight:600;text-decoration:none;
+    color:var(--ink);background:var(--curtain-hi);border-radius:10px;padding:14px;
+  }
+  .downloads a:active{transform:translateY(1px)}
+
+  .error{color:var(--flash);font-size:13px;text-align:center;margin:0}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<h1>Your Photobooth Photos</h1>
+
+<form id="codeForm" hidden>
+  <p class="hint">Enter the 6-character code printed on your photo strip.</p>
+  <div>
+    <label for="codeInput">Session code</label>
+    <input id="codeInput" maxlength="6" autocapitalize="characters" autocomplete="off" inputmode="text" placeholder="7K9XPQ">
+  </div>
+  <p class="error" id="codeError" hidden></p>
+  <button type="submit">View my photos</button>
+</form>
+
+<div class="media" id="gallery" hidden>
+  <img id="stripImg" alt="Your photo strip">
+  <img id="gifImg" alt="Your animated GIF">
+</div>
+
+<div class="downloads" id="downloads" hidden>
+  <a id="dlSheet">Download strip</a>
+  <a id="dlStory">Download photo</a>
+  <a id="dlGif">Download GIF</a>
+</div>
+
+<p class="hint" id="iosHint" hidden>On iPhone: long-press an image above and choose "Save to Photos".</p>
+
+<script>
+  // Same Cloudinary cloud name entered in the photobooth app's "Cloud upload" panel.
+  const CLOUD_NAME = 'fbhrxtkn';
+
+  const $ = id => document.getElementById(id);
+  const codeForm=$('codeForm'), codeInput=$('codeInput'), codeError=$('codeError');
+  const gallery=$('gallery'), stripImg=$('stripImg'), gifImg=$('gifImg');
+  const downloads=$('downloads'), dlSheet=$('dlSheet'), dlStory=$('dlStory'), dlGif=$('dlGif');
+  const iosHint=$('iosHint');
+
+  const deliveryUrl = (code,name,ext) =>
+    `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/booth/${code}/${name}.${ext}`;
+  // fl_attachment forces a real download — the HTML `download` attribute is ignored on cross-origin links.
+  const attachmentUrl = (code,name,ext) =>
+    `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/fl_attachment/booth/${code}/${name}.${ext}`;
+
+  function showForm(message){
+    gallery.hidden=true; downloads.hidden=true; iosHint.hidden=true;
+    codeForm.hidden=false;
+    codeError.hidden = !message;
+    codeError.textContent = message || '';
+  }
+
+  function showGallery(code){
+    stripImg.onerror = () => showForm("Didn't find photos for that code — check it and try again.");
+    stripImg.onload = () => {
+      codeForm.hidden=true;
+      gallery.hidden=false; downloads.hidden=false; iosHint.hidden=false;
+    };
+    stripImg.src = deliveryUrl(code,'sheet','jpg');
+    gifImg.src = deliveryUrl(code,'anim','gif');
+    dlSheet.href = attachmentUrl(code,'sheet','jpg');
+    dlStory.href = attachmentUrl(code,'story','jpg');
+    dlGif.href = attachmentUrl(code,'anim','gif');
+  }
+
+  const params = new URLSearchParams(location.search);
+  const codeParam = (params.get('s') || '').trim().toUpperCase();
+
+  if(codeParam){
+    showGallery(codeParam);
+  } else {
+    showForm();
+  }
+
+  codeForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const code = codeInput.value.trim().toUpperCase();
+    if(!code) return;
+    history.replaceState(null, '', `?s=${code}`);
+    showGallery(code);
+  });
+</script>
+</body>
+</html>
