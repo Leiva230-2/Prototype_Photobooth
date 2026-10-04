@@ -1,0 +1,105 @@
+@import './tokens.css';
+
+body.gallery {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 20px 48px;
+  gap: 18px;
+}
+
+h1 {
+  font-size: 22px;
+  margin: 0;
+  font-weight: 800;
+  text-align: center;
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--ink-dim);
+  text-align: center;
+  line-height: 1.5;
+  max-width: 340px;
+  margin: 0;
+}
+
+.code-form {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+.code-form label {
+  font-size: 13px;
+  color: var(--ink-dim);
+}
+.code-form input {
+  font-size: 24px;
+  letter-spacing: 0.18em;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 10px;
+  padding: 14px;
+  font-family: var(--mono);
+}
+.code-form .btn {
+  padding: 14px;
+  font-size: 16px;
+}
+
+.error {
+  color: var(--flash);
+  font-size: 13px;
+  text-align: center;
+  margin: 0;
+}
+.loading {
+  color: var(--ink-dim);
+}
+
+.media {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+.code-label {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: 13px;
+}
+.code-label span {
+  font-family: var(--mono);
+  color: var(--mint);
+  letter-spacing: 0.2em;
+}
+.media img {
+  border-radius: 12px;
+  border: 1px solid var(--curtain-hi);
+  background: var(--curtain);
+  display: block;
+}
+#stripImg {
+  width: auto;
+  max-width: 100%;
+  max-height: 72vh;
+}
+#gifImg {
+  width: 100%;
+}
+
+.downloads {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.downloads .btn {
+  padding: 14px;
+}

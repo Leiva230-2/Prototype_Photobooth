@@ -1,0 +1,128 @@
+:root {
+  --void: #160f1e;
+  --curtain: #251a31;
+  --curtain-hi: #33253f;
+  --curtain-hover: #40304e;
+  --flash: #ff4d6d;
+  --flash-hi: #ff6680;
+  --bulb: #ffd166;
+  --mint: #5be0c8;
+  --paper: #faf6ef;
+  --ink: #ede6f2;
+  --ink-dim: #9e8fad;
+  --radius: 14px;
+  --font: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+}
+
+body {
+  background: var(--void);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.btn {
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  background: var(--curtain-hi);
+  color: var(--ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.08s ease, background 0.15s ease;
+}
+.btn:hover:not(:disabled) {
+  background: var(--curtain-hover);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.btn--primary {
+  background: var(--flash);
+  color: #fff;
+}
+.btn--primary:hover:not(:disabled) {
+  background: var(--flash-hi);
+}
+.btn--ghost {
+  background: transparent;
+  border: 1px solid var(--curtain-hi);
+}
+.btn--small {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 2px;
+}
+
+input,
+select {
+  background: var(--curtain);
+  color: var(--ink);
+  border: 1px solid var(--curtain-hi);
+  border-radius: 9px;
+  padding: 9px 11px;
+  width: 100%;
+}
+
+code {
+  font-family: var(--mono);
+  background: var(--void);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
