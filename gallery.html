@@ -122,10 +122,13 @@
     dlGif.href = attachmentUrl(code,'anim','gif');
   }
 
+  // Same alphabet as genSessionCode() in the booth app (no 0/O, 1/I/L).
+  const CODE_RE = /^[ABCDEFGHJKMNPQRSTUVWXYZ2-9]{6}$/;
+
   const params = new URLSearchParams(location.search);
   const codeParam = (params.get('s') || '').trim().toUpperCase();
 
-  if(codeParam){
+  if(CODE_RE.test(codeParam)){
     showGallery(codeParam);
   } else {
     showForm();
@@ -135,6 +138,7 @@
     e.preventDefault();
     const code = codeInput.value.trim().toUpperCase();
     if(!code) return;
+    if(!CODE_RE.test(code)) return showForm("That doesn't look like a code — it's 6 letters/numbers from your strip.");
     history.replaceState(null, '', `?s=${code}`);
     showGallery(code);
   });

@@ -138,6 +138,7 @@
   .log .ok{color:var(--mint)}
 
   .toggle{display:flex;align-items:center;gap:8px;font-size:13px}
+  [hidden]{display:none!important}
   .toggle input{width:auto}
 
   @media (prefers-reduced-motion:reduce){
@@ -312,6 +313,7 @@ const sleep = ms => new Promise(r=>setTimeout(r,ms));
 async function listCameras(){
   const devices = await navigator.mediaDevices.enumerateDevices();
   const cams = devices.filter(d=>d.kind==='videoinput');
+  const current = camSel.value;
   camSel.innerHTML='';
   cams.forEach((c,i)=>{
     const o=document.createElement('option');
@@ -319,6 +321,7 @@ async function listCameras(){
     o.textContent=c.label || `Camera ${i+1}`;
     camSel.appendChild(o);
   });
+  if(cams.some(c=>c.deviceId===current)) camSel.value=current;
   log(`${cams.length} camera${cams.length===1?'':'s'} found`);
   return cams;
 }
@@ -379,7 +382,7 @@ async function runSession(){
   if(busy) return;
   busy=true; shots=[]; sessionCode=genSessionCode();
   startBtn.disabled=true; resetBtn.disabled=true;
-  results.hidden=true; linksEl.innerHTML='';
+  clearResults();
   viewfinder.classList.remove('idle');
   promptEl.hidden=false; pipsEl.hidden=false;
   log(`Session code: ${sessionCode}`);
@@ -409,11 +412,26 @@ async function runSession(){
   renderPips(SHOTS);
   promptEl.textContent='Building your photos…';
   await process();
+}
 
+function endSession(){
+  countEl.textContent='';
   promptEl.hidden=true; pipsEl.hidden=true;
   viewfinder.classList.add('idle');
   startBtn.disabled=false; resetBtn.disabled=false;
   busy=false;
+}
+
+// Revoke old preview blob URLs — the booth runs all day, so they add up.
+function setPreview(img,blob){
+  if(img.src.startsWith('blob:')) URL.revokeObjectURL(img.src);
+  img.src = blob ? URL.createObjectURL(blob) : '';
+}
+
+function clearResults(){
+  results.hidden=true; linksEl.innerHTML='';
+  $('qrWrap').hidden=true; $('qrImg').removeAttribute('src');
+  setPreview($('sheetImg'),null); setPreview($('gifImg'),null);
 }
 
 /* ============================================================
@@ -479,7 +497,8 @@ function buildStory(){
   c.width=1080; c.height=1920;
   const ctx=c.getContext('2d');
   ctx.fillStyle='#160F1E'; ctx.fillRect(0,0,1080,1920);
-  const sw=STRIP_W*1.5, sh=SHEET_H*1.5, sx=(1080-sw)/2, sy=(1920-sh)/2;
+  const scale=Math.min(1080/STRIP_W,1920/SHEET_H)*0.94;   // fit, with a little breathing room
+  const sw=STRIP_W*scale, sh=SHEET_H*scale, sx=(1080-sw)/2, sy=(1920-sh)/2;
   const strip=document.createElement('canvas');
   strip.width=STRIP_W; strip.height=SHEET_H;
   drawStrip(strip.getContext('2d'),0);
@@ -536,13 +555,14 @@ function addLink(label,url){
 
 async function process(){
   const code=sessionCode;
+  await Promise.all(['800 58px','600 30px'].map(f=>document.fonts.load(`${f} "Bricolage Grotesque"`))).catch(()=>{});
   const sheet=buildSheet(), story=buildStory();
   const sheetBlob=await toBlob(sheet), storyBlob=await toBlob(story);
   const gifBlob=await buildGif();
   log(`Built: sheet ${Math.round(sheetBlob.size/1024)}KB · story ${Math.round(storyBlob.size/1024)}KB · gif ${Math.round(gifBlob.size/1024)}KB`);
 
-  $('sheetImg').src=URL.createObjectURL(sheetBlob);
-  $('gifImg').src=URL.createObjectURL(gifBlob);
+  setPreview($('sheetImg'),sheetBlob);
+  setPreview($('gifImg'),gifBlob);
   results.hidden=false;
 
   // Print sheet also goes straight to the local printer, on top of the cloud copy below.
@@ -587,12 +607,12 @@ async function process(){
 }
 
 /* ---------- Wire up ---------- */
-startBtn.addEventListener('click',()=>runSession().catch(e=>{
-  log(e.message,'err'); busy=false; startBtn.disabled=false;
-}));
+startBtn.addEventListener('click',()=>{
+  if(busy) return;
+  runSession().catch(e=>log(e.message,'err')).finally(endSession);
+});
 resetBtn.addEventListener('click',()=>{
-  shots=[]; results.hidden=true; linksEl.innerHTML='';
-  $('qrWrap').hidden=true; resetBtn.disabled=true;
+  shots=[]; clearResults(); resetBtn.disabled=true;
 });
 $('mirrorOut').addEventListener('change',e=>{
   video.classList.toggle('mirrored',e.target.checked);
