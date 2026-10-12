@@ -91,3 +91,8 @@ export const DECKS = {
 } as const satisfies Record<string, Deck>;
 
 export type DeckId = keyof typeof DECKS;
+
+/** Session timing beyond the capture loop. */
+export const DECK_TIMEOUT_MS = 60_000; // nobody picks a deck → back to the attract screen
+export const REVEAL_MS = 3_400; // minimum time the gacha reveal stays on screen
+export const RESULT_MS = 30_000; // result + QR screen, then back to attract

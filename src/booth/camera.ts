@@ -39,6 +39,11 @@ export class Camera {
     return this.stream?.getVideoTracks()[0]?.getSettings().deviceId;
   }
 
+  /** The live stream, so other <video> elements (e.g. the tablet mirror) can show it too. */
+  get mediaStream(): MediaStream | null {
+    return this.stream;
+  }
+
   get ready(): boolean {
     return !!this.stream && this.video.videoWidth > 0;
   }

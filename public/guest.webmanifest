@@ -1,0 +1,10 @@
+{
+  "name": "Photobooth",
+  "short_name": "Photobooth",
+  "start_url": "/guest.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#160F1E",
+  "theme_color": "#160F1E",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

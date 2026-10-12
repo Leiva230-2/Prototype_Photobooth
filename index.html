@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Photobooth</title>
+    <title>Photobooth — Console</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,105 +12,8 @@
       rel="stylesheet"
     />
   </head>
-  <body class="booth">
-    <main class="stage">
-      <div class="viewfinder is-idle" id="viewfinder">
-        <video id="video" autoplay playsinline muted class="is-mirrored"></video>
-
-        <div class="vf-message" id="vfMessage" hidden></div>
-        <div class="prompt" id="prompt" hidden></div>
-        <div class="countdown" aria-live="assertive"><span id="count"></span></div>
-        <div class="pips" id="pips" hidden></div>
-        <div class="flash" id="flash"></div>
-
-        <div class="guest-qr" id="guestQr" hidden>
-          <div class="guest-qr__card">
-            <img id="guestQrImg" alt="QR code ke halaman galeri" />
-            <p>Scan untuk ambil foto kamu</p>
-            <p class="guest-qr__code" id="guestQrCode"></p>
-          </div>
-        </div>
-      </div>
-
-      <div class="controls">
-        <button class="btn btn--primary" id="startBtn" disabled>
-          Mulai sesi <kbd>Space</kbd>
-        </button>
-        <button class="btn" id="resetBtn" disabled>Reset <kbd>Esc</kbd></button>
-        <label class="select-inline">
-          <span class="visually-hidden">Deck</span>
-          <select id="deckSel"></select>
-        </label>
-        <label class="toggle">
-          <input type="checkbox" id="mirrorChk" /> Mirror
-        </label>
-        <button class="btn btn--ghost" id="fullscreenBtn" title="Layar penuh (F)">⛶ Fullscreen</button>
-      </div>
-    </main>
-
-    <aside class="panel">
-      <header class="panel__head">
-        <h1>Photobooth</h1>
-        <span class="status" id="cloudStatus"></span>
-      </header>
-
-      <section>
-        <h2>Kamera</h2>
-        <select id="camSel" aria-label="Kamera"></select>
-        <p class="hint">
-          iPhone: pasang di dekat Mac, terkunci dan landscape, login Apple ID yang sama. Akan muncul
-          sebagai “iPhone Camera”.
-        </p>
-      </section>
-
-      <details class="settings" id="settings">
-        <summary>Pengaturan</summary>
-
-        <div class="field">
-          <label for="eventName">Nama event (dicetak di strip)</label>
-          <input id="eventName" autocomplete="off" />
-        </div>
-        <div class="field">
-          <label for="cloudName">Cloudinary cloud name</label>
-          <input id="cloudName" placeholder="kosongkan = simpan lokal" autocomplete="off" />
-        </div>
-        <div class="field">
-          <label for="preset">Unsigned upload preset</label>
-          <input id="preset" placeholder="contoh: photobooth_dev" autocomplete="off" />
-        </div>
-        <p class="hint">
-          Cloudinary → Settings → Upload → tambah preset <strong>unsigned</strong>. Kalau kosong,
-          semua file di-download ke komputer ini.
-        </p>
-        <div class="field">
-          <label for="galleryUrl">URL halaman galeri</label>
-          <input id="galleryUrl" type="url" placeholder="https://domainkamu.com/gallery.html" autocomplete="off" />
-        </div>
-        <p class="hint">QR code akan mengarah ke sini dengan kode sesi, contoh <code>?s=7K9XPQ</code>.</p>
-      </details>
-
-      <section class="results" id="results" hidden>
-        <h2>Hasil <span class="code-tag" id="resultCode"></span></h2>
-        <div class="thumbs">
-          <a class="thumb thumb--sheet" id="sheetLink" target="_blank" rel="noopener">
-            <img id="sheetImg" alt="Lembar cetak, dua strip identik" />
-          </a>
-          <a class="thumb thumb--gif" id="gifLink" target="_blank" rel="noopener">
-            <img id="gifImg" alt="GIF animasi dari empat foto" />
-          </a>
-        </div>
-        <div class="actions">
-          <button class="btn btn--small" id="redownloadBtn">Download ulang sheet</button>
-        </div>
-        <div class="links" id="links"></div>
-      </section>
-
-      <section class="log-section">
-        <h2>Log</h2>
-        <div class="log" id="log" role="log"></div>
-      </section>
-    </aside>
-
-    <script type="module" src="/src/booth/main.ts"></script>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/host/main.tsx"></script>
   </body>
 </html>

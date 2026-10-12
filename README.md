@@ -10,24 +10,33 @@ file statis di mana saja.
 
 ## Fitur
 
-**Booth (operator)** — `index.html`
-- Pilih kamera: webcam Mac, iPhone (Continuity Camera), atau DSLR lewat capture card HDMI
-- 5 deck prompt pose: Bestie, Couple, Chaos, Corporate, Anak Kuliahan
-- Countdown, efek flash, dan indikator progres foto
-- Mirror on/off untuk preview dan hasil foto
-- Komposisi otomatis: lembar cetak 1200×1800 (300dpi), story 1080×1920, GIF 480×320
+**Console booth (Mac)** — `index.html`
+- Kamera besar untuk cek framing: webcam Mac, iPhone (Continuity Camera), atau DSLR lewat capture card HDMI
+- **Mirror layar tablet**: salinan persis layar tamu. Klik di mirror = tap di tablet
+- **Pratinjau desain**: tombol Layar awal / Pilih gaya / Foto / Gacha / Hasil + QR untuk melihat tiap layar
+  dengan data contoh, di Mac dan di tablet sekaligus (klik lagi untuk replay animasi)
+- Hasil terakhir: lembar cetak, frame hasil gacha, QR, download ulang sheet
+- Status bar: tablet / kamera / cloud, tahap sesi, gaya default, Mulai, Reset
+- Pengaturan dan log dalam drawer
+- Shortcut keyboard: `Space` mulai, `Esc` reset (atau tutup drawer), `F` layar penuh
+
+**Layar tamu (tablet, landscape)** — `guest.html`
+- Layar awal dengan preview kamera live dan peluang tiap frame
+- Pilih gaya: Bestie, Couple, Chaos, Corporate, Anak Kuliahan
+- 4 foto dengan arahan pose, countdown, dan flash
+- **Gacha frame** dengan animasi kapsul: Hitam, Putih, Ungu, Coklat (peluang sama, 25%)
+- Hasil: strip, frame, QR code ke galeri, kode sesi
+- Layar penuh otomatis saat disentuh, layar tidak mati selama dipakai
+
+**Proses foto**
+- Lembar cetak 1200×1800 (300dpi, 2 strip identik), story 1080×1920, GIF 480×320, warna sesuai frame gacha
 - Kode sesi 6 karakter dicetak di strip (tanpa huruf yang mirip seperti 0/O dan 1/I/L)
 - Upload ke Cloudinary; kalau cloud belum diatur atau upload gagal, file di-download lokal
-- Lembar cetak selalu di-download ke komputer untuk dicetak
-- QR code besar di layar setelah sesi selesai, supaya tamu bisa langsung scan
-- Pengaturan tersimpan otomatis di browser (tetap ada setelah reload)
-- Shortcut keyboard: `Space` mulai sesi, `Esc` batal/reset, `F` fullscreen
-- Log aktivitas
+- Lembar cetak selalu di-download ke Mac untuk dicetak
 
 **Galeri (tamu)** — `gallery.html`
 - Buka lewat QR (`?s=KODE`) atau ketik kode secara manual
-- Preview strip dan GIF, tombol download foto / GIF / lembar cetak
-- Tombol **Bagikan** (share sheet bawaan HP) jika browser mendukung
+- Preview strip dan GIF, tombol download foto / GIF / lembar cetak, tombol **Bagikan**
 
 ## Menjalankan
 
@@ -35,16 +44,34 @@ Butuh Node.js 20+.
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173 (booth) dan /gallery.html
+npm run dev        # console: http://localhost:5173 · tablet: /guest.html · galeri: /gallery.html
 ```
 
 > Kamera hanya bisa diakses lewat `http://localhost` atau `https://`, tidak bisa dari `file://`.
+
+### Menyambungkan tablet (Galaxy Tab S8) lewat kabel
+
+Sekali saja di tablet:
+1. Settings → About tablet → Software information → ketuk **Build number** 7 kali (Developer options aktif).
+2. Developer options → nyalakan **USB debugging**.
+
+Sekali saja di Mac: `brew install android-platform-tools` (untuk perintah `adb`).
+
+Setiap kali dipakai:
+1. Jalankan `npm run dev` dan buka console di Mac (`http://localhost:5173`).
+2. Colok tablet ke Mac pakai kabel USB-C **data** (bukan kabel charge saja), ketuk **Allow** di tablet.
+3. Jalankan `npm run tablet` di terminal kedua.
+4. Di Chrome tablet buka `http://localhost:5173/guest.html`. Tambahkan ke Home screen supaya selalu layar penuh,
+   dan pakai **App pinning** (Settings → Security) supaya tamu tidak bisa keluar.
+
+Kalau kabel dicabut, ulangi langkah 3. Cadangan tanpa kabel: `npm run dev:wifi`, lalu buka
+`http://IP-MAC:5173/guest.html` di tablet (Mac dan tablet harus di Wi-Fi yang sama, tanpa client isolation).
 
 Perintah lain:
 
 ```bash
 npm run build      # build produksi ke folder dist/
-npm run preview    # jalankan hasil build
+npm run preview    # jalankan hasil build (sambungan tablet juga jalan di sini)
 npm test           # unit test
 npm run typecheck  # cek TypeScript
 ```
@@ -62,24 +89,33 @@ npm run typecheck  # cek TypeScript
 ## Struktur
 
 ```
-index.html, gallery.html     halaman booth & galeri
+index.html, guest.html, gallery.html   console Mac, layar tablet, galeri tamu
+server/booth-link.ts         hub WebSocket Mac ↔ tablet (plugin Vite)
+src/host/                    console Mac (React): controller.ts + App.tsx
+src/guest/                   layar tamu (React): GuestScreen.tsx dipakai tablet dan mirror
 src/booth/
-  main.ts                    alur sesi & UI
+  session.ts                 alur sesi: layar awal → gaya → foto → gacha → hasil (diuji)
+  gacha.ts                   daftar frame dan roll() berbobot (diuji)
+  preview-stream.ts          kirim preview kamera ke tablet
   camera.ts                  akses kamera (getUserMedia)
   compose.ts                 gambar strip, sheet, story, GIF
   layout.ts                  perhitungan crop/fit (diuji)
   config.ts                  ukuran cetak, timing, deck prompt
   settings.ts                pengaturan yang disimpan di localStorage
-  logger.ts
-src/gallery/main.ts          halaman galeri tamu
-src/shared/                  kode sesi & URL Cloudinary (dipakai booth dan galeri)
-src/styles/                  CSS
+src/shared/                  kode sesi, URL Cloudinary, protokol sambungan, state layar tamu
+src/ui/                      komponen bersama (stage berskala, video live, QR)
 tests/                       unit test (Vitest)
 ```
 
+## Mengubah gacha
+
+Frame dan peluangnya ada di `FRAMES` di `src/booth/gacha.ts`. Sekarang semua `weight: 1` (peluang sama).
+Untuk tier rarity, ubah bobotnya, misalnya 60/30/10. Layar tamu dan pengaturan otomatis menampilkan
+persentase yang baru.
+
 ## Mengganti desain frame
 
-Desain strip saat ini masih placeholder (`drawStrip` di `src/booth/compose.ts`). Setelah
+Desain strip saat ini berupa warna polos dari frame gacha (`drawStrip` di `src/booth/compose.ts`). Setelah
 desainer mengekspor PNG 600×1800 dengan lubang transparan untuk foto, ganti bagian itu dengan
 `ctx.drawImage(framePng, ...)`.
 

@@ -17,6 +17,7 @@ import {
   STORY_W,
   STRIP_W,
 } from './config';
+import type { FrameStyle } from './gacha';
 import { containRect, coverCrop } from './layout';
 
 export interface StripInfo {
@@ -56,22 +57,23 @@ export async function ensureFonts(): Promise<void> {
 }
 
 /**
- * Placeholder frame art. Swap for drawImage(framePNG, ...) once the
- * designers export 600x1800 PNGs with transparent photo cutouts.
+ * Plain-colour frame art from the gacha roll. Swap for drawImage(framePNG, ...)
+ * once the designers export 600x1800 PNGs with transparent photo cutouts.
  */
 function drawStrip(
   ctx: CanvasRenderingContext2D,
   ox: number,
   shots: HTMLCanvasElement[],
   info: StripInfo,
+  frame: FrameStyle,
 ): void {
-  ctx.fillStyle = COLORS.paper;
+  ctx.fillStyle = frame.bg;
   ctx.fillRect(ox, 0, STRIP_W, SHEET_H);
 
   shots.forEach((shot, i) => {
     const x = ox + MARGIN_X;
     const y = MARGIN_TOP + i * (CELL_H + GAP);
-    ctx.fillStyle = COLORS.cellBorder;
+    ctx.fillStyle = frame.border;
     ctx.fillRect(x - 2, y - 2, CELL_W + 4, CELL_H + 4);
     drawCover(ctx, shot, x, y, CELL_W, CELL_H);
   });
@@ -79,11 +81,11 @@ function drawStrip(
   const cx = ox + STRIP_W / 2;
   const date = info.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
   const lines: [string, string, string, number][] = [
-    ['PHOTOBOOTH', COLORS.void, `800 58px ${FONT_FAMILY}`, 92],
-    [date, COLORS.dim, `600 30px ${FONT_FAMILY}`, 146],
-    [info.eventName.toUpperCase(), COLORS.flash, `600 26px ${FONT_FAMILY}`, 196],
-    ['YOUR CODE', COLORS.dim, `600 20px ${FONT_FAMILY}`, 236],
-    [info.code.split('').join(' '), COLORS.mint, '700 34px ui-monospace, SFMono-Regular, Menlo, monospace', 272],
+    ['PHOTOBOOTH', frame.ink, `800 58px ${FONT_FAMILY}`, 92],
+    [date, frame.dim, `600 30px ${FONT_FAMILY}`, 146],
+    [info.eventName.toUpperCase(), frame.accent, `600 26px ${FONT_FAMILY}`, 196],
+    ['YOUR CODE', frame.dim, `600 20px ${FONT_FAMILY}`, 236],
+    [info.code.split('').join(' '), frame.ink, '700 34px ui-monospace, SFMono-Regular, Menlo, monospace', 272],
   ];
   ctx.textAlign = 'center';
   for (const [text, color, font, dy] of lines) {
@@ -94,10 +96,22 @@ function drawStrip(
   }
 }
 
-export function buildStrip(shots: HTMLCanvasElement[], info: StripInfo): HTMLCanvasElement {
+export function buildStrip(
+  shots: HTMLCanvasElement[],
+  info: StripInfo,
+  frame: FrameStyle,
+): HTMLCanvasElement {
   const [c, ctx] = canvas(STRIP_W, SHEET_H);
-  drawStrip(ctx, 0, shots, info);
+  drawStrip(ctx, 0, shots, info, frame);
   return c;
+}
+
+/** Small JPEG of the strip for the tablet's result screen. */
+export function stripThumbnail(strip: HTMLCanvasElement, width = 300): string {
+  const h = Math.round((strip.height * width) / strip.width);
+  const [c, ctx] = canvas(width, h);
+  ctx.drawImage(strip, 0, 0, width, h);
+  return c.toDataURL('image/jpeg', 0.82);
 }
 
 /** Print sheet: two identical strips side by side. */
@@ -109,9 +123,9 @@ export function buildSheet(strip: HTMLCanvasElement): HTMLCanvasElement {
 }
 
 /** 9:16 story image with the whole strip visible. */
-export function buildStory(strip: HTMLCanvasElement): HTMLCanvasElement {
+export function buildStory(strip: HTMLCanvasElement, frame: FrameStyle): HTMLCanvasElement {
   const [c, ctx] = canvas(STORY_W, STORY_H);
-  ctx.fillStyle = COLORS.void;
+  ctx.fillStyle = frame.storyBg;
   ctx.fillRect(0, 0, STORY_W, STORY_H);
   const r = containRect(STRIP_W, SHEET_H, STORY_W, STORY_H, 0.94);
   ctx.drawImage(strip, r.x, r.y, r.w, r.h);
