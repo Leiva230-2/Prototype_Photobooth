@@ -23,6 +23,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 :where(.gs) h1,
+:where(.gs) h2,
 :where(.gs) p,
 :where(.gs) ul {
   margin: 0;
@@ -443,7 +444,7 @@
   bottom: 8px;
   transform: translateX(-50%);
   display: flex;
-  gap: 12px;
+  gap: 10px;
   padding: 8px 18px;
   border-radius: 999px;
   box-shadow: 0 6px 16px rgba(34, 52, 92, 0.25);
@@ -474,6 +475,199 @@
   to {
     opacity: 0;
   }
+}
+
+/* ---------- Pick photos ---------- */
+.gs-select {
+  inset: 40px 52px;
+  padding: 34px 44px 34px;
+  display: flex;
+  flex-direction: column;
+}
+.gs-select__star {
+  right: -16px;
+  top: -14px;
+  transform: rotate(14deg);
+}
+.gs-select .gs-title {
+  font-size: 64px;
+}
+.gs-select__sub {
+  margin: 10px 0 24px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+}
+.gs-select__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px 16px;
+}
+.gs-tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--tan);
+  box-shadow: 0 0 0 4px var(--cream), 0 6px 14px rgba(58, 42, 38, 0.18);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    opacity 0.12s ease;
+}
+.gs-tile img,
+.gs-tile__blank {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.gs-tile__blank--0 {
+  background: #c9b9a2;
+}
+.gs-tile__blank--1 {
+  background: #a9bfe0;
+}
+.gs-tile__blank--2 {
+  background: #d8c6b4;
+}
+.gs-tile.is-on {
+  box-shadow: 0 0 0 6px var(--red), 0 10px 20px rgba(158, 42, 43, 0.3);
+  transform: rotate(-1.5deg) scale(1.02);
+}
+.gs-tile.is-muted {
+  opacity: 0.5;
+}
+.gs-tile:active {
+  transform: scale(0.97);
+}
+.gs-tile__no {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  min-width: 30px;
+  padding: 2px 8px 3px;
+  border-radius: 99px;
+  background: rgba(239, 232, 223, 0.92);
+  font-family: var(--font-chunky);
+  font-size: 16px;
+  color: var(--red);
+}
+.gs-tile__check {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--red);
+  color: var(--cream);
+  box-shadow: 0 0 0 3px var(--cream);
+  animation: gs-pop-in 0.22s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+}
+@keyframes gs-pop-in {
+  from {
+    transform: scale(0.3);
+  }
+}
+.gs-select__bar {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.gs-upsell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 12px 20px 14px;
+  transform: rotate(-2deg);
+  color: var(--red);
+}
+.gs-upsell b {
+  font-size: 24px;
+  font-weight: 900;
+}
+.gs-upsell span {
+  font-size: 17px;
+  font-weight: 700;
+}
+.gs-upsell:active {
+  transform: rotate(-2deg) translateY(3px);
+}
+.gs-select__go {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.gs-select__count {
+  font-size: 20px;
+  font-weight: 800;
+}
+.gs-next {
+  padding: 16px 48px 18px;
+  border-radius: 999px;
+  background: var(--red);
+  font-size: 26px;
+  font-weight: 900;
+  box-shadow: 0 4px 0 var(--red-deep);
+}
+:where(.gs) .gs-next {
+  color: var(--cream);
+}
+.gs-next[aria-disabled='true'] {
+  background: var(--tan-deep);
+  box-shadow: none;
+  color: rgba(158, 42, 43, 0.55);
+}
+.gs-next:not([aria-disabled='true']):active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--red-deep);
+}
+
+.gs-pending {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(214, 226, 243, 0.82);
+  border-radius: 4px;
+}
+.gs-pending__card {
+  position: relative;
+  width: 620px;
+  padding: 40px 48px 40px;
+  text-align: center;
+  border-radius: 4px;
+  box-shadow: 0 20px 44px rgba(34, 52, 92, 0.3);
+  transform: rotate(-1deg);
+}
+.gs-pending__star {
+  left: -20px;
+  top: -20px;
+  transform: rotate(-14deg);
+}
+.gs-pending__card h2 {
+  font-size: 70px;
+}
+.gs-pending__card p {
+  margin: 16px 0 26px;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.gs-pending__back {
+  padding: 10px 24px 12px;
+  border: 2.5px solid var(--red);
+  border-radius: 999px;
+  font-size: 19px;
+  font-weight: 800;
 }
 
 /* ---------- Gacha reveal ---------- */
@@ -643,6 +837,19 @@
   height: 684px;
   width: auto;
 }
+/* Big print: the whole 2×4 sheet instead of a strip. */
+.gs-result--big .gs-result__strip {
+  left: 64px;
+  top: 92px;
+}
+.gs-result--big .gs-result__strip img {
+  width: 400px;
+  height: auto;
+}
+.gs-result--big .gs-result__card {
+  left: 520px;
+}
+
 /* Tape on the two top corners, so nothing covers the code printed at the bottom. */
 .gs-result__tape1,
 .gs-result__tape2 {

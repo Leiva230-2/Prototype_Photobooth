@@ -11,8 +11,20 @@ export const MARGIN_TOP = 36;
 export const GAP = 18;
 export const CELL_W = 528; // 3:2 photo cells
 export const CELL_H = 352;
-export const SHOTS = 4;
-export const FOOTER_Y = MARGIN_TOP + SHOTS * CELL_H + (SHOTS - 1) * GAP; // 1498
+/** Photos taken per session. */
+export const SHOTS = 8;
+/** Photos the guest picks for the strip (the big print uses all SHOTS). */
+export const STRIP_SHOTS = 4;
+export const FOOTER_Y = MARGIN_TOP + STRIP_SHOTS * CELL_H + (STRIP_SHOTS - 1) * GAP; // 1498
+
+/**
+ * Big print: all 8 photos on one uncut 4x6" sheet, 2 columns × 4 rows of 3:2
+ * cells, with one shared footer. Print it WITHOUT the printer's 2x6 cut.
+ */
+export const BIG_COLS = 2;
+export const BIG_CELL_W = 555;
+export const BIG_CELL_H = 370;
+export const BIG_FOOTER_Y = MARGIN_TOP + 4 * BIG_CELL_H + 3 * GAP; // 1570
 
 /** 9:16 version, ready to post straight to a story. */
 export const STORY_W = 1080;
@@ -23,8 +35,9 @@ export const GIF_H = 320;
 export const GIF_FRAME_MS = 420;
 
 export const COUNTDOWN_FROM = 3;
-export const PROMPT_MS = 2200;
-export const AFTER_SHOT_MS = 600;
+// Shorter than before so 8 shots still fit in about 42 seconds.
+export const PROMPT_MS = 1800;
+export const AFTER_SHOT_MS = 500;
 
 /** Dearly brand colours (from the Venture Creation deck), for canvas drawing. */
 export const COLORS = {
@@ -54,6 +67,10 @@ export const DECKS = {
       'Pura-pura lagi ngegosipin orang di belakang kamera',
       'Muka pas dosen bilang "ada kuis hari ini"',
       'Peluk yang paling nggak nyaman',
+      'Saling tunjuk: "dia yang salah!"',
+      'Pura-pura nggak kenal satu sama lain',
+      'Tos paling heboh',
+      'Foto ala album keluarga zaman dulu',
       'Bebas — pose andalan kalian',
     ],
   },
@@ -63,6 +80,10 @@ export const DECKS = {
       'Lihat satu sama lain kayak baru ketemu pertama kali',
       'Satu orang ngelucu, satu orang nahan ketawa',
       'Foto yang bakal kalian sesali 5 tahun lagi',
+      'Pura-pura berantem soal mau makan di mana',
+      'Pose prewedding paling dramatis',
+      'Bisikin sesuatu ke telinga pasangan',
+      'Bikin bentuk hati pakai tangan berdua',
       'Bebas',
     ],
   },
@@ -72,6 +93,10 @@ export const DECKS = {
       'Ekspresi paling jelek yang kalian bisa',
       'Pura-pura lagi jatuh',
       'Semua orang lihat arah yang beda',
+      'Pura-pura kesetrum',
+      'Teriak sekencang-kencangnya, tapi tanpa suara',
+      'Jadi patung paling aneh',
+      'Satu orang pingsan, sisanya panik',
       'Bebas',
     ],
   },
@@ -81,6 +106,10 @@ export const DECKS = {
       'Headshot LinkedIn paling serius',
       'Handshake yang terlalu formal',
       'Pura-pura lagi presentasi ke investor',
+      'Tunjuk grafik yang nggak ada',
+      'Muka "meeting ini harusnya cukup lewat email"',
+      'Foto tim buat website kantor',
+      'Rayain closing deal',
       'Bebas',
     ],
   },
@@ -90,6 +119,10 @@ export const DECKS = {
       'Muka pas lihat nilai keluar',
       'Pura-pura baik-baik aja',
       'Sujud syukur karena akhirnya submit',
+      'Ngantuk di kelas jam 7 pagi',
+      'Nunggu dosen yang nggak dateng-dateng',
+      'Panik, deadline jam 23.59',
+      'Lempar toga khayalan',
       'Bebas',
     ],
   },
@@ -99,5 +132,6 @@ export type DeckId = keyof typeof DECKS;
 
 /** Session timing beyond the capture loop. */
 export const DECK_TIMEOUT_MS = 60_000; // nobody picks a deck → back to the attract screen
+export const SELECT_TIMEOUT_MS = 45_000; // nobody picks → the first photos are used
 export const REVEAL_MS = 3_400; // minimum time the gacha reveal stays on screen
 export const RESULT_MS = 30_000; // result + QR screen, then back to attract

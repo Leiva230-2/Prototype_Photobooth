@@ -338,6 +338,46 @@ kbd {
   line-height: 20px;
 }
 
+.bar__upgrade {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.bar__upgrade.is-pending {
+  padding: 6px;
+  margin: -6px 0;
+  border-radius: 999px;
+  background: var(--sticky);
+  animation: nudge 1.4s ease-in-out infinite;
+}
+@keyframes nudge {
+  50% {
+    box-shadow: 0 0 0 5px rgba(244, 236, 177, 0.6);
+  }
+}
+.result__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pkg-chip {
+  padding: 3px 12px 4px;
+  border-radius: 99px;
+  font-size: 12.5px;
+  font-weight: 900;
+  background: var(--tan);
+  color: var(--red);
+}
+.pkg-chip.is-big {
+  background: var(--red);
+  color: var(--cream);
+}
+.hint--warn {
+  margin: 0;
+  color: var(--red);
+  font-weight: 800;
+}
+
 /* ---------- Drawers ---------- */
 .drawer {
   position: fixed;

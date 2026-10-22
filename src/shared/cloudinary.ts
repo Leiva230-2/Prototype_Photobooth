@@ -3,6 +3,8 @@ export const ASSETS = {
   sheet: { name: 'sheet', ext: 'jpg' },
   story: { name: 'story', ext: 'jpg' },
   gif: { name: 'anim', ext: 'gif' },
+  /** All 8 photos on one sheet — every guest gets this digitally. */
+  all: { name: 'all', ext: 'jpg' },
 } as const;
 
 export type AssetKey = keyof typeof ASSETS;

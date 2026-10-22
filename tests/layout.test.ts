@@ -1,12 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
+  BIG_CELL_H,
+  BIG_CELL_W,
+  BIG_COLS,
+  BIG_FOOTER_Y,
   CELL_H,
   FOOTER_Y,
   GAP,
   MARGIN_TOP,
+  MARGIN_X,
+  SHOTS,
   SHEET_H,
   SHEET_W,
-  SHOTS,
+  STRIP_SHOTS,
   STORY_H,
   STORY_W,
   STRIP_W,
@@ -19,8 +25,21 @@ describe('print geometry', () => {
   });
 
   it('leaves room for the footer under four cells', () => {
-    expect(FOOTER_Y).toBe(MARGIN_TOP + SHOTS * CELL_H + (SHOTS - 1) * GAP);
+    expect(FOOTER_Y).toBe(MARGIN_TOP + STRIP_SHOTS * CELL_H + (STRIP_SHOTS - 1) * GAP);
     expect(FOOTER_Y + 272).toBeLessThan(SHEET_H); // last footer line (the code)
+  });
+});
+
+describe('big print geometry', () => {
+  it('fits all photos in 2 columns of 3:2 cells across the sheet', () => {
+    expect(BIG_COLS * 4).toBe(SHOTS);
+    expect(2 * MARGIN_X + BIG_COLS * BIG_CELL_W + (BIG_COLS - 1) * GAP).toBe(SHEET_W);
+    expect(BIG_CELL_W / BIG_CELL_H).toBeCloseTo(1.5, 1);
+  });
+
+  it('leaves room for one shared footer', () => {
+    expect(BIG_FOOTER_Y).toBe(MARGIN_TOP + 4 * BIG_CELL_H + 3 * GAP);
+    expect(SHEET_H - BIG_FOOTER_Y).toBeGreaterThanOrEqual(200);
   });
 });
 

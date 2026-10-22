@@ -1,5 +1,9 @@
 import { applyPalette, GIFEncoder, quantize } from 'gifenc';
 import {
+  BIG_CELL_H,
+  BIG_CELL_W,
+  BIG_COLS,
+  BIG_FOOTER_Y,
   CELL_H,
   CELL_W,
   COLORS,
@@ -110,7 +114,56 @@ export function buildStrip(
   return c;
 }
 
-/** Small JPEG of the strip for the tablet's result screen. */
+/** Small 3:2 JPEG of one shot for the tablet's selection screen. */
+export function shotThumbnail(shot: HTMLCanvasElement, width = 360): string {
+  const h = Math.round(width / 1.5);
+  const [c, ctx] = canvas(width, h);
+  drawCover(ctx, shot, 0, 0, width, h);
+  return c.toDataURL('image/jpeg', 0.72);
+}
+
+/**
+ * Big print: every shot on one uncut 4x6" sheet, 2 columns × 4 rows, read left
+ * to right, with one shared footer.
+ */
+export function buildBigSheet(
+  shots: HTMLCanvasElement[],
+  info: StripInfo,
+  frame: FrameStyle,
+): HTMLCanvasElement {
+  const [c, ctx] = canvas(SHEET_W, SHEET_H);
+  ctx.fillStyle = frame.bg;
+  ctx.fillRect(0, 0, SHEET_W, SHEET_H);
+  shots.forEach((shot, i) => {
+    const x = MARGIN_X + (i % BIG_COLS) * (BIG_CELL_W + GAP);
+    const y = MARGIN_TOP + Math.floor(i / BIG_COLS) * (BIG_CELL_H + GAP);
+    ctx.fillStyle = frame.border;
+    ctx.fillRect(x - 2, y - 2, BIG_CELL_W + 4, BIG_CELL_H + 4);
+    drawCover(ctx, shot, x, y, BIG_CELL_W, BIG_CELL_H);
+  });
+
+  // Footer: logo on the left half, date / event / code on the right half.
+  const left = SHEET_W / 4;
+  const right = (SHEET_W * 3) / 4;
+  const date = info.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  const lines: [string, string, string, number, number][] = [
+    ['Dearly', frame.ink, `400 96px ${FONTS.script}`, left, 108],
+    ['Photobooth', frame.accent, `400 36px ${FONTS.chunky}`, left, 166],
+    [date, frame.dim, `700 26px ${FONTS.body}`, right, 84],
+    [info.eventName, frame.dim, `800 22px ${FONTS.body}`, right, 120],
+    [`Kode ${info.code}`, frame.ink, `400 32px ${FONTS.chunky}`, right, 168],
+  ];
+  ctx.textAlign = 'center';
+  for (const [text, color, font, x, dy] of lines) {
+    if (!text) continue;
+    ctx.fillStyle = color;
+    ctx.font = font;
+    ctx.fillText(text, x, BIG_FOOTER_Y + dy, SHEET_W / 2 - 2 * MARGIN_X);
+  }
+  return c;
+}
+
+/** Small JPEG of the strip (or big sheet) for the tablet's result screen. */
 export function stripThumbnail(strip: HTMLCanvasElement, width = 300): string {
   const h = Math.round((strip.height * width) / strip.width);
   const [c, ctx] = canvas(width, h);
@@ -146,18 +199,18 @@ function drawGingham(ctx: CanvasRenderingContext2D, w: number, h: number, size: 
   ctx.restore();
 }
 
-/** 9:16 story image: the strip, slightly tilted, on the Dearly gingham. */
-export function buildStory(strip: HTMLCanvasElement): HTMLCanvasElement {
+/** 9:16 story image: the strip (or big sheet), slightly tilted, on the Dearly gingham. */
+export function buildStory(print: HTMLCanvasElement): HTMLCanvasElement {
   const [c, ctx] = canvas(STORY_W, STORY_H);
   drawGingham(ctx, STORY_W, STORY_H, 150);
-  const r = containRect(STRIP_W, SHEET_H, STORY_W, STORY_H, 0.86);
+  const r = containRect(print.width, print.height, STORY_W, STORY_H, 0.86);
   ctx.save();
   ctx.translate(STORY_W / 2, STORY_H / 2);
   ctx.rotate((-3 * Math.PI) / 180);
   ctx.shadowColor = COLORS.shadow;
   ctx.shadowBlur = 50;
   ctx.shadowOffsetY = 24;
-  ctx.drawImage(strip, -r.w / 2, -r.h / 2, r.w, r.h);
+  ctx.drawImage(print, -r.w / 2, -r.h / 2, r.w, r.h);
   ctx.restore();
   return c;
 }

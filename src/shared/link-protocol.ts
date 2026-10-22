@@ -11,6 +11,14 @@ export type GuestIntent =
   | { type: 'start' }
   | { type: 'deck'; deck: DeckId }
   | { type: 'cancel' }
+  /** Pick or unpick a photo on the selection screen. */
+  | { type: 'toggle'; index: number }
+  /** Done picking: print the strip. */
+  | { type: 'confirm' }
+  /** Wants the big print with all photos (operator confirms payment). */
+  | { type: 'upgrade' }
+  /** Changed their mind about the big print. */
+  | { type: 'cancelUpgrade' }
   | { type: 'finish' };
 
 export type LinkMessage =

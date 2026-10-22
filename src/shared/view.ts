@@ -1,11 +1,14 @@
-import { DECKS, SHOTS, type DeckId } from '../booth/config';
+import { DECKS, SHOTS, STRIP_SHOTS, type DeckId } from '../booth/config';
 import type { FrameId } from '../booth/gacha';
 
 /**
  * Everything the guest screen needs to draw itself. The Mac sends this to the
  * tablet on every change, and renders the same thing in its tablet mirror.
  */
-export type Phase = 'idle' | 'deck' | 'capturing' | 'reveal' | 'result';
+export type Phase = 'idle' | 'deck' | 'capturing' | 'select' | 'reveal' | 'result';
+
+/** Standard: 4 chosen photos on a strip (printed twice, cut). Big: all 8 on one uncut sheet. */
+export type PrintPackage = 'standard' | 'big';
 
 export interface GuestView {
   phase: Phase;
@@ -28,6 +31,15 @@ export interface GuestView {
   busy: boolean;
   /** Short note for the guest, e.g. when the QR isn't available. */
   note: string | null;
+  /** Small JPEG data URLs of every shot, sent only while the guest is choosing. */
+  thumbs: string[];
+  /** Indexes of the shots chosen for the strip, in the order they were taken. */
+  selected: number[];
+  /** How many photos go on the strip. */
+  pickCount: number;
+  pkg: PrintPackage;
+  /** Guest asked for the big print; waiting for the operator to confirm payment. */
+  upgradePending: boolean;
   /** True when the operator is previewing a screen with sample data. */
   preview: boolean;
 }
@@ -46,6 +58,11 @@ export const IDLE_VIEW: GuestView = {
   stripThumb: null,
   busy: false,
   note: null,
+  thumbs: [],
+  selected: [],
+  pickCount: STRIP_SHOTS,
+  pkg: 'standard',
+  upgradePending: false,
   preview: false,
 };
 
@@ -53,6 +70,7 @@ export const PHASE_LABELS: Record<Phase, string> = {
   idle: 'Layar awal',
   deck: 'Pilih gaya',
   capturing: 'Foto',
+  select: 'Pilih foto',
   reveal: 'Gacha',
   result: 'Hasil + QR',
 };
@@ -70,6 +88,7 @@ export function sampleView(phase: Phase): GuestView {
     count: phase === 'capturing' ? 3 : null,
     frame: phase === 'reveal' || phase === 'result' ? 'ungu' : null,
     code: phase === 'result' ? 'K7XP2Q' : null,
+    selected: phase === 'select' ? [0, 2, 5] : [],
     link: phase === 'result' ? 'https://example.com/gallery.html?s=K7XP2Q' : null,
   };
 }

@@ -35,6 +35,7 @@ export function GuestScreen({ view, preview, onIntent }: Props) {
         />
       )}
       {view.phase === 'capturing' && <Capture view={view} preview={preview} />}
+      {view.phase === 'select' && <Select view={view} onIntent={onIntent} />}
       {view.phase === 'reveal' && <Reveal view={view} />}
       {view.phase === 'result' && <Result view={view} onFinish={() => onIntent({ type: 'finish' })} />}
       {view.preview && <div className="gs-preview-note sticky">Pratinjau desain</div>}
@@ -175,9 +176,90 @@ function Capture({ view, preview }: { view: GuestView; preview: ReactNode }) {
       )}
       <div className="gs-progress paper" aria-label={`Foto ${Math.min(view.shot + 1, view.totalShots)} dari ${view.totalShots}`}>
         {Array.from({ length: view.totalShots }, (_, i) => (
-          <Star key={i} size={30} className={i < view.shot ? 'is-done' : i === view.shot ? 'is-now' : ''} />
+          <Star key={i} size={24} className={i < view.shot ? 'is-done' : i === view.shot ? 'is-now' : ''} />
         ))}
       </div>
+    </div>
+  );
+}
+
+/* ---------- Pick photos ---------- */
+function Select({ view, onIntent }: { view: GuestView; onIntent(intent: GuestIntent): void }) {
+  const count = view.selected.length;
+  const full = count >= view.pickCount;
+  const tiles = Array.from({ length: view.totalShots }, (_, i) => i);
+  return (
+    <div className="gs-sheet paper gs-select">
+      <Star size={40} className="gs-select__star" />
+      <h1 className="gs-title sticker">Pilih {view.pickCount} foto favoritmu</h1>
+      <p className="gs-select__sub">Tap fotonya. Yang kamu pilih masuk ke strip.</p>
+
+      <ul className="gs-select__grid">
+        {tiles.map((i) => {
+          const on = view.selected.includes(i);
+          return (
+            <li key={i}>
+              <button
+                type="button"
+                className={`gs-tile ${on ? 'is-on' : ''} ${full && !on ? 'is-muted' : ''}`}
+                aria-pressed={on}
+                aria-label={`Foto ${i + 1}`}
+                onClick={() => onIntent({ type: 'toggle', index: i })}
+              >
+                {view.thumbs[i] ? (
+                  <img src={view.thumbs[i]} alt="" />
+                ) : (
+                  <span className={`gs-tile__blank gs-tile__blank--${i % 3}`} />
+                )}
+                <span className="gs-tile__no">{i + 1}</span>
+                {on && (
+                  <span className="gs-tile__check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="26" height="26">
+                      <path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                )}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="gs-select__bar">
+        <button type="button" className="gs-upsell sticky" onClick={() => onIntent({ type: 'upgrade' })}>
+          <b>Suka semua?</b>
+          <span>Ambil versi besar: {view.totalShots} foto di satu lembar 4R</span>
+        </button>
+        <div className="gs-select__go">
+          <span className="gs-select__count">
+            {count} dari {view.pickCount} dipilih
+          </span>
+          <button
+            type="button"
+            className="gs-next"
+            aria-disabled={!full}
+            onClick={() => full && onIntent({ type: 'confirm' })}
+          >
+            Lanjut
+          </button>
+        </div>
+      </div>
+
+      {view.upgradePending && (
+        <div className="gs-pending">
+          <div className="gs-pending__card paper">
+            <Star size={44} className="gs-pending__star" />
+            <h2 className="sticker">Versi besar!</h2>
+            <p>
+              Semua {view.totalShots} foto dicetak di satu lembar 4R. Bayar ke kasir dulu ya, setelah dikonfirmasi
+              langsung lanjut.
+            </p>
+            <button type="button" className="gs-pending__back" onClick={() => onIntent({ type: 'cancelUpgrade' })}>
+              Nggak jadi, pilih {view.pickCount} aja
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -212,8 +294,9 @@ function Reveal({ view }: { view: GuestView }) {
 function Result({ view, onFinish }: { view: GuestView; onFinish(): void }) {
   const frame = frameById(view.frame ?? 'putih');
   const qr = useQr(view.link);
+  const printing = view.pkg === 'big' ? 'Versi besarmu lagi dicetak.' : 'Strip-nya lagi dicetak.';
   return (
-    <div className="gs-result">
+    <div className={`gs-result ${view.pkg === 'big' ? 'gs-result--big' : ''}`}>
       <div className="gs-result__strip">
         <span className="tape gs-result__tape1" />
         {view.stripThumb ? (
@@ -228,9 +311,13 @@ function Result({ view, onFinish }: { view: GuestView; onFinish(): void }) {
       <div className="gs-sheet paper gs-result__card">
         <h1 className="gs-title sticker">Fotomu jadi!</h1>
         {view.link ? (
-          <p className="gs-result__copy">Strip-nya lagi dicetak. Scan QR ini buat simpan versi digitalnya.</p>
+          <p className="gs-result__copy">
+            {printing} Scan QR ini buat simpan semua {view.totalShots} foto versi digitalnya.
+          </p>
         ) : (
-          <p className="gs-result__copy">Strip-nya lagi dicetak. {view.note ?? 'QR belum tersedia.'}</p>
+          <p className="gs-result__copy">
+            {printing} {view.note ?? 'QR belum tersedia.'}
+          </p>
         )}
         <div className="gs-result__row">
           {view.link && (
