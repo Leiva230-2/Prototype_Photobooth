@@ -179,10 +179,9 @@ function ResultPanel({ s, ctl }: PanelProps) {
             <div className="result__chips">
               <FrameChip id={r.frame} />
               <span className={`pkg-chip ${r.pkg === 'big' ? 'is-big' : ''}`}>
-                {r.pkg === 'big' ? 'Besar · 8 foto' : 'Strip · 4 foto'}
+                {r.pkg === 'big' ? 'Besar · 8 foto kecil × 2' : 'Strip · 4 foto'}
               </span>
             </div>
-            {r.pkg === 'big' && <p className="hint hint--warn">Cetak sebagai 4x6 biasa, tanpa potong 2x6.</p>}
             {r.qr ? (
               <img className="result__qr" src={r.qr} alt="QR code galeri" />
             ) : (

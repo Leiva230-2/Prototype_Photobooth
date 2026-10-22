@@ -116,6 +116,9 @@ function Attract({ preview, onStart }: { preview: ReactNode; onStart(): void }) 
 }
 
 /* ---------- Deck picker ---------- */
+/** Poses previewed on each card; the rest are a surprise. */
+const CARD_POSES = 3;
+
 function DeckPicker({ onPick, onCancel }: { onPick(deck: DeckId): void; onCancel(): void }) {
   return (
     <div className="gs-sheet paper gs-deck">
@@ -133,10 +136,11 @@ function DeckPicker({ onPick, onCancel }: { onPick(deck: DeckId): void; onCancel
               <span className="gs-card__label">{DECKS[id].label}</span>
               {/* Spans, not a list: buttons may only contain inline content. */}
               <span className="gs-card__poses">
-                {DECKS[id].prompts.map((p) => (
+                {DECKS[id].prompts.slice(0, CARD_POSES).map((p) => (
                   <span key={p}>{p}</span>
                 ))}
               </span>
+              <span className="gs-card__more">+{DECKS[id].prompts.length - CARD_POSES} pose lagi</span>
             </button>
           </li>
         ))}
@@ -159,6 +163,10 @@ function Capture({ view, preview }: { view: GuestView; preview: ReactNode }) {
       {/* The window is exactly 3:2 — the shape of each photo on the strip. */}
       <div className="gs-capture__window">
         <div className="gs-capture__live">{preview}</div>
+        {/* What the small portrait photos of the big print keep (centre crop). */}
+        <div className="gs-capture__guide" aria-hidden="true">
+          <span>Area foto kecil</span>
+        </div>
         {view.count !== null && (
           <div className="gs-count sticker" key={`${view.shot}-${view.count}`}>
             {view.count}
@@ -228,7 +236,7 @@ function Select({ view, onIntent }: { view: GuestView; onIntent(intent: GuestInt
       <div className="gs-select__bar">
         <button type="button" className="gs-upsell sticky" onClick={() => onIntent({ type: 'upgrade' })}>
           <b>Suka semua?</b>
-          <span>Ambil versi besar: {view.totalShots} foto di satu lembar 4R</span>
+          <span>Ambil versi besar: semua {view.totalShots} foto, dicetak 2 set</span>
         </button>
         <div className="gs-select__go">
           <span className="gs-select__count">
@@ -251,8 +259,8 @@ function Select({ view, onIntent }: { view: GuestView; onIntent(intent: GuestInt
             <Star size={44} className="gs-pending__star" />
             <h2 className="sticker">Versi besar!</h2>
             <p>
-              Semua {view.totalShots} foto dicetak di satu lembar 4R. Bayar ke kasir dulu ya, setelah dikonfirmasi
-              langsung lanjut.
+              Semua {view.totalShots} foto dicetak ukuran kecil, 2 set: buat kamu dan temanmu. Bayar ke kasir
+              dulu ya, setelah dikonfirmasi langsung lanjut.
             </p>
             <button type="button" className="gs-pending__back" onClick={() => onIntent({ type: 'cancelUpgrade' })}>
               Nggak jadi, pilih {view.pickCount} aja

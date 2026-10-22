@@ -1,9 +1,16 @@
 import { applyPalette, GIFEncoder, quantize } from 'gifenc';
 import {
+  ALL_CELL_H,
+  ALL_CELL_W,
+  ALL_COLS,
+  ALL_FOOTER_Y,
+  ALL_GAP,
+  ALL_MARGIN,
   BIG_CELL_H,
   BIG_CELL_W,
   BIG_COLS,
   BIG_FOOTER_Y,
+  BIG_ROWS,
   CELL_H,
   CELL_W,
   COLORS,
@@ -89,11 +96,11 @@ function drawStrip(
   const maxW = STRIP_W - 2 * MARGIN_X;
   const date = info.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
   const lines: [string, string, string, number][] = [
-    ['Dearly', frame.ink, `400 92px ${FONTS.script}`, 96],
-    ['Photobooth', frame.accent, `400 34px ${FONTS.chunky}`, 140],
-    [date, frame.dim, `700 24px ${FONTS.body}`, 188],
-    [info.eventName, frame.dim, `800 21px ${FONTS.body}`, 222],
-    [`Kode ${info.code}`, frame.ink, `400 30px ${FONTS.chunky}`, 276],
+    ['Dearly', frame.ink, `400 86px ${FONTS.script}`, 88],
+    ['Photobooth', frame.accent, `400 32px ${FONTS.chunky}`, 132],
+    [date, frame.dim, `700 22px ${FONTS.body}`, 174],
+    [info.eventName, frame.dim, `800 20px ${FONTS.body}`, 206],
+    [`Kode ${info.code}`, frame.ink, `400 28px ${FONTS.chunky}`, 252],
   ];
   ctx.textAlign = 'center';
   for (const [text, color, font, dy] of lines) {
@@ -123,10 +130,55 @@ export function shotThumbnail(shot: HTMLCanvasElement, width = 360): string {
 }
 
 /**
- * Big print: every shot on one uncut 4x6" sheet, 2 columns × 4 rows, read left
- * to right, with one shared footer.
+ * Big print: 4×4 portrait cells (2.55 × 3.5 cm), edge to edge. The left half
+ * holds all 8 shots and the right half repeats them, so the sheet is cut down
+ * the middle like a strip sheet. Each half gets its own footer.
  */
-export function buildBigSheet(
+export function buildBigPrint(
+  shots: HTMLCanvasElement[],
+  info: StripInfo,
+  frame: FrameStyle,
+): HTMLCanvasElement {
+  const [c, ctx] = canvas(SHEET_W, SHEET_H);
+  ctx.fillStyle = frame.bg;
+  ctx.fillRect(0, 0, SHEET_W, SHEET_H);
+  const half = BIG_COLS / 2;
+  const date = info.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+  for (const ox of [0, STRIP_W]) {
+    shots.forEach((shot, i) => {
+      const x = ox + (i % half) * BIG_CELL_W;
+      const y = Math.floor(i / half) * BIG_CELL_H;
+      if (y >= BIG_ROWS * BIG_CELL_H) return;
+      drawCover(ctx, shot, x, y, BIG_CELL_W, BIG_CELL_H);
+    });
+
+    // Footer: logo on the left, date / event / code on the right of this half.
+    const l = ox + 170;
+    const r = ox + 432;
+    const lines: [string, string, string, number, number][] = [
+      ['Dearly', frame.ink, `400 58px ${FONTS.script}`, l, 66],
+      ['Photobooth', frame.accent, `400 22px ${FONTS.chunky}`, l, 100],
+      [date, frame.dim, `700 19px ${FONTS.body}`, r, 50],
+      [info.eventName, frame.dim, `800 15px ${FONTS.body}`, r, 76],
+      [`Kode ${info.code}`, frame.ink, `400 22px ${FONTS.chunky}`, r, 110],
+    ];
+    ctx.textAlign = 'center';
+    for (const [text, color, font, x, dy] of lines) {
+      if (!text) continue;
+      ctx.fillStyle = color;
+      ctx.font = font;
+      ctx.fillText(text, x, BIG_FOOTER_Y + dy, 250);
+    }
+  }
+  return c;
+}
+
+/**
+ * Digital sheet with all 8 shots uncropped (2 columns × 4 rows of 3:2), for the
+ * gallery. Every guest gets this, whichever print they bought.
+ */
+export function buildAllSheet(
   shots: HTMLCanvasElement[],
   info: StripInfo,
   frame: FrameStyle,
@@ -135,14 +187,13 @@ export function buildBigSheet(
   ctx.fillStyle = frame.bg;
   ctx.fillRect(0, 0, SHEET_W, SHEET_H);
   shots.forEach((shot, i) => {
-    const x = MARGIN_X + (i % BIG_COLS) * (BIG_CELL_W + GAP);
-    const y = MARGIN_TOP + Math.floor(i / BIG_COLS) * (BIG_CELL_H + GAP);
+    const x = ALL_MARGIN + (i % ALL_COLS) * (ALL_CELL_W + ALL_GAP);
+    const y = ALL_MARGIN + Math.floor(i / ALL_COLS) * (ALL_CELL_H + ALL_GAP);
     ctx.fillStyle = frame.border;
-    ctx.fillRect(x - 2, y - 2, BIG_CELL_W + 4, BIG_CELL_H + 4);
-    drawCover(ctx, shot, x, y, BIG_CELL_W, BIG_CELL_H);
+    ctx.fillRect(x - 2, y - 2, ALL_CELL_W + 4, ALL_CELL_H + 4);
+    drawCover(ctx, shot, x, y, ALL_CELL_W, ALL_CELL_H);
   });
 
-  // Footer: logo on the left half, date / event / code on the right half.
   const left = SHEET_W / 4;
   const right = (SHEET_W * 3) / 4;
   const date = info.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -158,7 +209,7 @@ export function buildBigSheet(
     if (!text) continue;
     ctx.fillStyle = color;
     ctx.font = font;
-    ctx.fillText(text, x, BIG_FOOTER_Y + dy, SHEET_W / 2 - 2 * MARGIN_X);
+    ctx.fillText(text, x, ALL_FOOTER_Y + dy, SHEET_W / 2 - 2 * MARGIN_X);
   }
   return c;
 }

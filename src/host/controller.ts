@@ -1,7 +1,8 @@
 import QRCode from 'qrcode';
 import { Camera } from '../booth/camera';
 import {
-  buildBigSheet,
+  buildAllSheet,
+  buildBigPrint,
   buildGif,
   buildSheet,
   buildStory,
@@ -322,11 +323,12 @@ export class BoothController {
     const info = { code, eventName: settings.eventName, date: new Date() };
     await ensureFonts();
 
-    // All photos on one sheet: printed for the big package, and every guest gets it digitally.
-    const all = buildBigSheet(shots, info, style);
+    // Every guest gets all 8 photos digitally, uncropped.
+    const all = buildAllSheet(shots, info, style);
+    // Printed: the strip with the 4 picks (twice), or the big 4×4 sheet (all 8, twice).
     const strip = pkg === 'big' ? null : buildStrip(chosen.map((i) => shots[i]), info, style);
-    const print = strip ? buildSheet(strip) : all;
-    const shown = strip ?? all;
+    const print = strip ? buildSheet(strip) : buildBigPrint(shots, info, style);
+    const shown = strip ?? print;
 
     const [sheetBlob, storyBlob, allBlob] = await Promise.all([
       toJpeg(print),
@@ -345,13 +347,10 @@ export class BoothController {
     this.patch({ lastResult: { code, frame, pkg, sheetUrl, gifUrl, link: null, qr: null } });
 
     // The print sheet always lands on this Mac for the printer, on top of any cloud copy.
-    // The big sheet must be printed as a normal 4x6, without the printer's 2x6 cut.
+    // Both sheets are two identical halves, so both print with the same 2x6 cut.
     const sheetName = sheetFilename(code, pkg);
     download(sheetBlob, sheetName);
-    this.log(
-      pkg === 'big' ? `Download ${sheetName} — cetak TANPA potong 2x6` : `Download ${sheetName}`,
-      pkg === 'big' ? 'ok' : 'info',
-    );
+    this.log(`Download ${sheetName}`, pkg === 'big' ? 'ok' : 'info');
 
     const jobs: [AssetKey, string, Blob, string][] = [
       ['sheet', 'Sheet', sheetBlob, sheetName],
@@ -407,9 +406,9 @@ export class BoothController {
   }
 }
 
-/** The big sheet gets its own name so whoever prints it knows not to cut it. */
+/** The big sheet gets its own name so it's easy to spot in Downloads. */
 function sheetFilename(code: string, pkg: PrintPackage): string {
-  return pkg === 'big' ? `sheet-${code}-besar-JANGAN-DIPOTONG.jpg` : `sheet-${code}.jpg`;
+  return pkg === 'big' ? `sheet-${code}-besar.jpg` : `sheet-${code}.jpg`;
 }
 
 function download(blob: Blob, filename: string): void {

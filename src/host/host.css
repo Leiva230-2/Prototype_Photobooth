@@ -372,11 +372,6 @@ kbd {
   background: var(--red);
   color: var(--cream);
 }
-.hint--warn {
-  margin: 0;
-  color: var(--red);
-  font-weight: 800;
-}
 
 /* ---------- Drawers ---------- */
 .drawer {

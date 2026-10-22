@@ -6,25 +6,39 @@
 export const SHEET_W = 1200;
 export const SHEET_H = 1800;
 export const STRIP_W = 600;
-export const MARGIN_X = 36;
-export const MARGIN_TOP = 36;
-export const GAP = 18;
-export const CELL_W = 528; // 3:2 photo cells
-export const CELL_H = 352;
+// Matches the designers' frame template (frame PNGs with transparent photo holes).
+export const MARGIN_X = 40;
+export const MARGIN_TOP = 43;
+export const GAP = 37;
+export const CELL_W = 520;
+export const CELL_H = 340;
 /** Photos taken per session. */
 export const SHOTS = 8;
-/** Photos the guest picks for the strip (the big print uses all SHOTS). */
+/** Photos the guest picks for the strip. */
 export const STRIP_SHOTS = 4;
-export const FOOTER_Y = MARGIN_TOP + STRIP_SHOTS * CELL_H + (STRIP_SHOTS - 1) * GAP; // 1498
+export const FOOTER_Y = MARGIN_TOP + STRIP_SHOTS * CELL_H + (STRIP_SHOTS - 1) * GAP; // 1514
 
 /**
- * Big print: all 8 photos on one uncut 4x6" sheet, 2 columns × 4 rows of 3:2
- * cells, with one shared footer. Print it WITHOUT the printer's 2x6 cut.
+ * Big print: 4×4 portrait cells of 2.55 × 3.5 cm (300 × 414 px), edge to edge.
+ * The left half holds all 8 photos and the right half repeats them, so the
+ * sheet is cut down the middle like a strip sheet: two identical sets.
  */
-export const BIG_COLS = 2;
-export const BIG_CELL_W = 555;
-export const BIG_CELL_H = 370;
-export const BIG_FOOTER_Y = MARGIN_TOP + 4 * BIG_CELL_H + 3 * GAP; // 1570
+export const BIG_COLS = 4;
+export const BIG_ROWS = 4;
+export const BIG_CELL_W = 300;
+export const BIG_CELL_H = 414;
+export const BIG_FOOTER_Y = BIG_ROWS * BIG_CELL_H; // 1656
+
+/**
+ * Digital "all photos" sheet (every guest gets it): 8 landscape photos,
+ * 2 columns × 4 rows, nothing cropped to portrait.
+ */
+export const ALL_COLS = 2;
+export const ALL_MARGIN = 36;
+export const ALL_GAP = 18;
+export const ALL_CELL_W = 555;
+export const ALL_CELL_H = 370;
+export const ALL_FOOTER_Y = ALL_MARGIN + 4 * ALL_CELL_H + 3 * ALL_GAP; // 1570
 
 /** 9:16 version, ready to post straight to a story. */
 export const STORY_W = 1080;

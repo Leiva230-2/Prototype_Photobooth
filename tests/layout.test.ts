@@ -1,10 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ALL_CELL_H,
+  ALL_CELL_W,
+  ALL_COLS,
+  ALL_FOOTER_Y,
+  ALL_GAP,
+  ALL_MARGIN,
   BIG_CELL_H,
   BIG_CELL_W,
   BIG_COLS,
   BIG_FOOTER_Y,
+  BIG_ROWS,
   CELL_H,
+  CELL_W,
   FOOTER_Y,
   GAP,
   MARGIN_TOP,
@@ -24,22 +32,35 @@ describe('print geometry', () => {
     expect(SHEET_W).toBe(2 * STRIP_W);
   });
 
-  it('leaves room for the footer under four cells', () => {
+  it('matches the frame template: 520×340 holes at 40,43 with a 37 px gap', () => {
+    expect(2 * MARGIN_X + CELL_W).toBe(STRIP_W);
+    expect(MARGIN_TOP + 4 * CELL_H + 3 * GAP).toBe(1514);
     expect(FOOTER_Y).toBe(MARGIN_TOP + STRIP_SHOTS * CELL_H + (STRIP_SHOTS - 1) * GAP);
-    expect(FOOTER_Y + 272).toBeLessThan(SHEET_H); // last footer line (the code)
+    expect(FOOTER_Y + 252).toBeLessThan(SHEET_H); // last footer line (the code)
   });
 });
 
 describe('big print geometry', () => {
-  it('fits all photos in 2 columns of 3:2 cells across the sheet', () => {
-    expect(BIG_COLS * 4).toBe(SHOTS);
-    expect(2 * MARGIN_X + BIG_COLS * BIG_CELL_W + (BIG_COLS - 1) * GAP).toBe(SHEET_W);
-    expect(BIG_CELL_W / BIG_CELL_H).toBeCloseTo(1.5, 1);
+  it('has 2.55 × 3.5 cm cells at 300 dpi, edge to edge', () => {
+    const cm = (px: number) => (px / 300) * 2.54;
+    expect(cm(BIG_CELL_W)).toBeCloseTo(2.54, 1);
+    expect(cm(BIG_CELL_H)).toBeCloseTo(3.5, 1);
+    expect(BIG_COLS * BIG_CELL_W).toBe(SHEET_W);
   });
 
-  it('leaves room for one shared footer', () => {
-    expect(BIG_FOOTER_Y).toBe(MARGIN_TOP + 4 * BIG_CELL_H + 3 * GAP);
-    expect(SHEET_H - BIG_FOOTER_Y).toBeGreaterThanOrEqual(200);
+  it('fits every photo once in each half, with room for the footer', () => {
+    expect((BIG_COLS / 2) * BIG_ROWS).toBe(SHOTS);
+    expect(BIG_FOOTER_Y).toBe(BIG_ROWS * BIG_CELL_H);
+    expect(SHEET_H - BIG_FOOTER_Y).toBeGreaterThanOrEqual(140);
+  });
+});
+
+describe('digital all-photos sheet', () => {
+  it('fits 8 landscape photos in 2 columns across the sheet', () => {
+    expect(ALL_COLS * 4).toBe(SHOTS);
+    expect(2 * ALL_MARGIN + ALL_COLS * ALL_CELL_W + (ALL_COLS - 1) * ALL_GAP).toBe(SHEET_W);
+    expect(ALL_CELL_W / ALL_CELL_H).toBeCloseTo(1.5, 1);
+    expect(SHEET_H - ALL_FOOTER_Y).toBeGreaterThanOrEqual(200);
   });
 });
 
