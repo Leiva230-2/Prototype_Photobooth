@@ -107,6 +107,16 @@ src/ui/                      komponen bersama (stage berskala, video live, QR)
 tests/                       unit test (Vitest)
 ```
 
+## Desain (Dearly)
+
+Warna, font dan elemen dekorasi diambil dari deck Venture Creation dan ada di `src/ui/brand.css`:
+background biru ke putih, kertas krem, kartu tan, merah Dearly, huruf "stiker" krem dengan outline merah,
+label merah, sticky note kuning, perangko, dan bintang (`src/ui/Decor.tsx`).
+
+Font sudah dibundel lewat npm (tidak perlu internet saat event): **Titan One** (judul), **Damion**
+(tulisan "Dearly") dan **Nunito** (teks). Kalau tahu font asli dari Canva, ganti di bagian atas
+`brand.css` dan di `FONTS` pada `src/booth/config.ts` (dipakai untuk strip cetak).
+
 ## Mengubah gacha
 
 Frame dan peluangnya ada di `FRAMES` di `src/booth/gacha.ts`. Sekarang semua `weight: 1` (peluang sama).

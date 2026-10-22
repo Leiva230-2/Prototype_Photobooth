@@ -3,23 +3,27 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Foto Photobooth Kamu</title>
+    <meta name="theme-color" content="#D6E2F3" />
+    <title>Fotomu — Dearly Photobooth</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap"
-      rel="stylesheet"
-    />
   </head>
-  <body class="gallery">
-    <header>
-      <h1>Foto Photobooth Kamu</h1>
+  <body class="gallery sky-bg">
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true" focusable="false">
+      <filter id="dearly-rough" x="-5%" y="-5%" width="110%" height="110%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="7" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" />
+      </filter>
+    </svg>
+
+    <header class="logo" role="img" aria-label="Dearly Photobooth">
+      <span class="logo__script sticker sticker--script">Dearly</span>
+      <span class="logo__word sticker">Photobooth</span>
     </header>
 
-    <form id="codeForm" class="code-form" hidden novalidate>
-      <p class="hint">Masukkan 6 karakter kode yang tercetak di strip foto kamu.</p>
-      <label for="codeInput">Kode sesi</label>
+    <form id="codeForm" class="card paper code-form" hidden novalidate>
+      <h1 class="sticker">Ambil fotomu</h1>
+      <p class="hint">Masukkan 6 karakter kode yang tercetak di bawah strip foto kamu.</p>
+      <label for="codeInput" class="visually-hidden">Kode sesi</label>
       <input
         id="codeInput"
         maxlength="8"
@@ -27,30 +31,30 @@
         autocomplete="off"
         spellcheck="false"
         inputmode="text"
-        placeholder="7K9XPQ"
+        placeholder="K7XP2Q"
       />
       <p class="error" id="codeError" role="alert" hidden></p>
       <button class="btn btn--primary" type="submit">Lihat foto</button>
     </form>
 
-    <p class="loading" id="loading" hidden>Memuat foto…</p>
+    <p class="loading card paper" id="loading" hidden>Lagi ambil fotomu…</p>
 
-    <main class="media" id="gallery" hidden>
-      <p class="code-label">Kode <span id="codeLabel"></span></p>
+    <main class="media card paper" id="gallery" hidden>
+      <p class="code-label">Kode <span id="codeLabel" class="tag"></span></p>
       <img id="stripImg" alt="Strip foto kamu" />
-      <img id="gifImg" alt="GIF animasi kamu" />
+      <div class="gif-wrap">
+        <div class="stamp"><img id="gifImg" alt="GIF animasi kamu" /></div>
+      </div>
 
       <div class="downloads">
         <button class="btn btn--primary" id="shareBtn" hidden>Bagikan</button>
-        <a class="btn" id="dlStory">Download foto</a>
-        <a class="btn" id="dlGif">Download GIF</a>
-        <a class="btn" id="dlSheet">Download lembar cetak</a>
+        <a class="btn" id="dlStory">Simpan foto story</a>
+        <a class="btn" id="dlGif">Simpan GIF</a>
+        <a class="btn" id="dlSheet">Simpan lembar cetak</a>
       </div>
 
-      <p class="hint" id="iosHint" hidden>
-        Di iPhone: tekan lama gambar di atas, lalu pilih “Simpan ke Foto”.
-      </p>
-      <button class="btn btn--ghost" id="otherCodeBtn" type="button">Kode lain</button>
+      <p class="hint" id="iosHint" hidden>Di iPhone: tekan lama gambar di atas, lalu pilih “Simpan ke Foto”.</p>
+      <button class="btn btn--ghost" id="otherCodeBtn" type="button">Pakai kode lain</button>
     </main>
 
     <script type="module" src="/src/gallery/main.ts"></script>

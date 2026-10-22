@@ -104,7 +104,7 @@ async function prepareShare(code: string): Promise<void> {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const blob = await res.blob();
         const ext = asset === 'gif' ? 'gif' : 'jpg';
-        return new File([blob], `photobooth-${code}-${asset}.${ext}`, { type: blob.type });
+        return new File([blob], `dearly-${code}-${asset}.${ext}`, { type: blob.type });
       }),
     );
     if (currentCode !== code || !navigator.canShare({ files })) return;
@@ -129,7 +129,7 @@ codeForm.addEventListener('submit', (e) => {
 
 shareBtn.addEventListener('click', () => {
   if (!shareFiles) return;
-  navigator.share({ files: shareFiles, title: 'Foto Photobooth' }).catch((err: Error) => {
+  navigator.share({ files: shareFiles, title: 'Foto Dearly Photobooth' }).catch((err: Error) => {
     if (err.name !== 'AbortError') console.error(err);
   });
 });

@@ -26,16 +26,23 @@ export const COUNTDOWN_FROM = 3;
 export const PROMPT_MS = 2200;
 export const AFTER_SHOT_MS = 600;
 
+/** Dearly brand colours (from the Venture Creation deck), for canvas drawing. */
 export const COLORS = {
-  void: '#160F1E',
-  paper: '#FAF6EF',
-  cellBorder: '#E2DACE',
-  dim: '#9E8FAD',
-  flash: '#FF4D6D',
-  mint: '#5BE0C8',
+  red: '#9E2A2B',
+  cream: '#EFE8DF',
+  skyDeep: '#7FA2DC',
+  skyMid: '#A9C2E9',
+  skyLight: '#D3E0F3',
+  skyWhite: '#F6F8FC',
+  shadow: 'rgba(34, 52, 92, 0.35)',
 } as const;
 
-export const FONT_FAMILY = '"Bricolage Grotesque", system-ui, sans-serif';
+/** Bundled fonts (see src/ui/brand.css). Canvas needs them loaded first: see ensureFonts(). */
+export const FONTS = {
+  body: '"Nunito Variable", "Nunito", system-ui, sans-serif',
+  chunky: '"Titan One", system-ui, sans-serif',
+  script: '"Damion", cursive',
+} as const;
 
 export interface Deck {
   label: string;

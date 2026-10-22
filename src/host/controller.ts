@@ -301,7 +301,7 @@ export class BoothController {
     const strip = buildStrip(shots, { code, eventName: settings.eventName, date: new Date() }, style);
     const [sheetBlob, storyBlob] = await Promise.all([
       toJpeg(buildSheet(strip)),
-      toJpeg(buildStory(strip, style)),
+      toJpeg(buildStory(strip)),
     ]);
     const gifBlob = buildGif(shots);
     const stripThumb = stripThumbnail(strip);

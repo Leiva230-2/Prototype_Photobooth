@@ -4,6 +4,7 @@ import { FRAMES, frameById, odds } from '../booth/gacha';
 import { hasCloud } from '../booth/settings';
 import { GuestScreen, STAGE_H, STAGE_W } from '../guest/GuestScreen';
 import { PHASE_LABELS, type GuestView, type Phase } from '../shared/view';
+import { RoughFilter } from '../ui/Decor';
 import { LiveVideo } from '../ui/LiveVideo';
 import { ScaledStage } from '../ui/ScaledStage';
 import type { BoothController, HostSnapshot } from './controller';
@@ -61,6 +62,7 @@ export function App({ ctl }: { ctl: BoothController }) {
 
   return (
     <div className="console">
+      <RoughFilter />
       <CameraPanel s={s} ctl={ctl} />
       <aside className="console__side">
         <MirrorPanel s={s} ctl={ctl} />
@@ -97,7 +99,7 @@ function CameraPanel({ s, ctl }: PanelProps) {
       {s.cameraInfo && <span className="cam__info">{s.cameraInfo}</span>}
       {v.phase === 'capturing' && v.prompt && <div className="cam__prompt">{v.prompt}</div>}
       {v.phase === 'capturing' && v.count !== null && (
-        <div className="cam__count" key={`${v.shot}-${v.count}`}>
+        <div className="cam__count sticker" key={`${v.shot}-${v.count}`}>
           {v.count}
         </div>
       )}
@@ -208,6 +210,9 @@ function StatusBar({ s, ctl, onOpen }: PanelProps & { onOpen(d: Drawer): void })
   const errors = s.log.filter((e) => e.level === 'err').length;
   return (
     <footer className="bar">
+      <span className="bar__brand sticker sticker--script" aria-label="Dearly">
+        Dearly
+      </span>
       <div className="bar__status">
         <span className={`conn ${s.tablets > 0 ? 'is-on' : ''}`}>
           <i />

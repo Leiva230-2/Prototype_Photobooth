@@ -15,10 +15,8 @@ export interface FrameStyle {
   ink: string;
   /** Secondary text (date, labels). */
   dim: string;
-  /** Event name and session code. */
+  /** "Photobooth" wordmark and event name. */
   accent: string;
-  /** Background of the 9:16 story image behind the strip. */
-  storyBg: string;
 }
 
 export const FRAMES = [
@@ -26,23 +24,21 @@ export const FRAMES = [
     id: 'hitam',
     name: 'Hitam',
     weight: 1,
-    bg: '#141414',
-    border: '#2E2E2E',
-    ink: '#FAF6EF',
-    dim: '#9A9A9A',
-    accent: '#FFD166',
-    storyBg: '#EDE6DC',
+    bg: '#161414',
+    border: '#2E2A28',
+    ink: '#EFE8DF',
+    dim: '#9A928A',
+    accent: '#F1D98A',
   },
   {
     id: 'putih',
     name: 'Putih',
     weight: 1,
-    bg: '#FAF6EF',
-    border: '#E2DACE',
-    ink: '#160F1E',
-    dim: '#8A8190',
-    accent: '#FF4D6D',
-    storyBg: '#160F1E',
+    bg: '#EFE8DF',
+    border: '#DCD2C2',
+    ink: '#9E2A2B',
+    dim: '#A0766A',
+    accent: '#9E2A2B',
   },
   {
     id: 'ungu',
@@ -50,10 +46,9 @@ export const FRAMES = [
     weight: 1,
     bg: '#4B2A7B',
     border: '#3A1F61',
-    ink: '#FAF6EF',
+    ink: '#EFE8DF',
     dim: '#C9B6E8',
-    accent: '#FFD166',
-    storyBg: '#160F1E',
+    accent: '#F1D98A',
   },
   {
     id: 'coklat',
@@ -61,10 +56,9 @@ export const FRAMES = [
     weight: 1,
     bg: '#6B4429',
     border: '#56351F',
-    ink: '#F6E9D8',
+    ink: '#F3E6D3',
     dim: '#D7B99A',
-    accent: '#FFD166',
-    storyBg: '#F6E9D8',
+    accent: '#F1D98A',
   },
 ] as const satisfies readonly FrameStyle[];
 

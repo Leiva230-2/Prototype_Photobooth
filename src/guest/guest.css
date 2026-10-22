@@ -3,30 +3,33 @@ body,
 #root {
   margin: 0;
   height: 100%;
-  background: #000;
+  background: #2a3550;
   overflow: hidden;
   overscroll-behavior: none;
 }
 .guest-offline {
   position: absolute;
   inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  background: rgba(22, 15, 30, 0.94);
-  color: #ede6f2;
-  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
-  text-align: center;
+  display: grid;
+  place-items: center;
   z-index: 20;
 }
-.guest-offline p {
-  margin: 0;
-  font-size: 44px;
-  font-weight: 800;
+.guest-offline__card {
+  width: 640px;
+  padding: 44px 50px 46px;
+  border-radius: 4px;
+  text-align: center;
+  color: var(--red);
+  font-family: var(--font-body);
+  box-shadow: 0 18px 40px rgba(34, 52, 92, 0.3);
 }
-.guest-offline span {
+.guest-offline__card h1 {
+  margin: 0 0 14px;
+  font-size: 60px;
+}
+.guest-offline__card p {
+  margin: 0;
   font-size: 22px;
-  color: #9e8fad;
+  font-weight: 700;
+  line-height: 1.4;
 }

@@ -3,7 +3,7 @@ import {
   CELL_H,
   CELL_W,
   COLORS,
-  FONT_FAMILY,
+  FONTS,
   FOOTER_Y,
   GAP,
   GIF_FRAME_MS,
@@ -48,11 +48,13 @@ function drawCover(
 /** Canvas text silently falls back to another font if the web font isn't loaded yet. */
 export async function ensureFonts(): Promise<void> {
   try {
-    await Promise.all(
-      ['800 58px', '600 30px'].map((f) => document.fonts.load(`${f} "Bricolage Grotesque"`)),
-    );
+    await Promise.all([
+      document.fonts.load(`400 92px ${FONTS.script}`),
+      document.fonts.load(`400 34px ${FONTS.chunky}`),
+      document.fonts.load(`700 24px ${FONTS.body}`),
+    ]);
   } catch {
-    // Offline — the fallback font is fine.
+    // Fonts are bundled, so this only fails in very old browsers; the fallback is fine.
   }
 }
 
@@ -78,21 +80,23 @@ function drawStrip(
     drawCover(ctx, shot, x, y, CELL_W, CELL_H);
   });
 
+  // Footer: the Dearly logo, date, event and the session code for the gallery.
   const cx = ox + STRIP_W / 2;
+  const maxW = STRIP_W - 2 * MARGIN_X;
   const date = info.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
   const lines: [string, string, string, number][] = [
-    ['PHOTOBOOTH', frame.ink, `800 58px ${FONT_FAMILY}`, 92],
-    [date, frame.dim, `600 30px ${FONT_FAMILY}`, 146],
-    [info.eventName.toUpperCase(), frame.accent, `600 26px ${FONT_FAMILY}`, 196],
-    ['YOUR CODE', frame.dim, `600 20px ${FONT_FAMILY}`, 236],
-    [info.code.split('').join(' '), frame.ink, '700 34px ui-monospace, SFMono-Regular, Menlo, monospace', 272],
+    ['Dearly', frame.ink, `400 92px ${FONTS.script}`, 96],
+    ['Photobooth', frame.accent, `400 34px ${FONTS.chunky}`, 140],
+    [date, frame.dim, `700 24px ${FONTS.body}`, 188],
+    [info.eventName, frame.dim, `800 21px ${FONTS.body}`, 222],
+    [`Kode ${info.code}`, frame.ink, `400 30px ${FONTS.chunky}`, 276],
   ];
   ctx.textAlign = 'center';
   for (const [text, color, font, dy] of lines) {
     if (!text) continue;
     ctx.fillStyle = color;
     ctx.font = font;
-    ctx.fillText(text, cx, FOOTER_Y + dy, STRIP_W - 2 * MARGIN_X);
+    ctx.fillText(text, cx, FOOTER_Y + dy, maxW);
   }
 }
 
@@ -122,13 +126,30 @@ export function buildSheet(strip: HTMLCanvasElement): HTMLCanvasElement {
   return c;
 }
 
-/** 9:16 story image with the whole strip visible. */
-export function buildStory(strip: HTMLCanvasElement, frame: FrameStyle): HTMLCanvasElement {
+/** Brand background: the deck's blue fading down to white. */
+function drawSky(ctx: CanvasRenderingContext2D, w: number, h: number): void {
+  const g = ctx.createLinearGradient(0, 0, 0, h);
+  g.addColorStop(0, COLORS.skyDeep);
+  g.addColorStop(0.38, COLORS.skyMid);
+  g.addColorStop(0.7, COLORS.skyLight);
+  g.addColorStop(1, COLORS.skyWhite);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+}
+
+/** 9:16 story image: the strip, slightly tilted, on the Dearly blue background. */
+export function buildStory(strip: HTMLCanvasElement): HTMLCanvasElement {
   const [c, ctx] = canvas(STORY_W, STORY_H);
-  ctx.fillStyle = frame.storyBg;
-  ctx.fillRect(0, 0, STORY_W, STORY_H);
-  const r = containRect(STRIP_W, SHEET_H, STORY_W, STORY_H, 0.94);
-  ctx.drawImage(strip, r.x, r.y, r.w, r.h);
+  drawSky(ctx, STORY_W, STORY_H);
+  const r = containRect(STRIP_W, SHEET_H, STORY_W, STORY_H, 0.86);
+  ctx.save();
+  ctx.translate(STORY_W / 2, STORY_H / 2);
+  ctx.rotate((-3 * Math.PI) / 180);
+  ctx.shadowColor = COLORS.shadow;
+  ctx.shadowBlur = 50;
+  ctx.shadowOffsetY = 24;
+  ctx.drawImage(strip, -r.w / 2, -r.h / 2, r.w, r.h);
+  ctx.restore();
   return c;
 }
 
@@ -136,7 +157,7 @@ export function buildGif(shots: HTMLCanvasElement[]): Blob {
   const enc = GIFEncoder();
   const [, ctx] = canvas(GIF_W, GIF_H);
   for (const shot of shots) {
-    ctx.fillStyle = COLORS.paper;
+    ctx.fillStyle = COLORS.cream;
     ctx.fillRect(0, 0, GIF_W, GIF_H);
     drawCover(ctx, shot, 0, 0, GIF_W, GIF_H);
     const { data } = ctx.getImageData(0, 0, GIF_W, GIF_H);

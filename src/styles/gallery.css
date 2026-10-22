@@ -1,94 +1,116 @@
 @import './tokens.css';
 
+/* Guest gallery on phones: logo, then one paper card on the blue-to-white background. */
 body.gallery {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 20px 48px;
-  gap: 18px;
+  padding: 26px 16px 48px;
+  color: var(--red);
 }
 
-h1 {
-  font-size: 22px;
-  margin: 0;
-  font-weight: 800;
-  text-align: center;
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.logo__script {
+  font-size: 78px;
+  line-height: 0.85;
+  transform: rotate(-7deg) translateX(-14px);
+  position: relative;
+  z-index: 1;
+}
+.logo__word {
+  font-size: 44px;
+  margin-top: -2px;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 4px;
+  padding: 24px 20px 26px;
+  box-shadow: 0 14px 30px rgba(34, 52, 92, 0.26);
 }
 
 .hint {
-  font-size: 13px;
-  color: var(--ink-dim);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-dim);
   text-align: center;
   line-height: 1.5;
-  max-width: 340px;
   margin: 0;
 }
 
 .code-form {
-  width: 100%;
-  max-width: 320px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 8px;
+  gap: 14px;
 }
-.code-form label {
-  font-size: 13px;
-  color: var(--ink-dim);
+.code-form h1 {
+  margin: 0;
+  font-size: 36px;
+  text-align: center;
 }
 .code-form input {
-  font-size: 24px;
-  letter-spacing: 0.18em;
+  font-family: var(--font-chunky);
+  font-size: 30px;
+  letter-spacing: 0.16em;
   text-align: center;
   text-transform: uppercase;
+  color: var(--red);
   border-radius: 10px;
   padding: 14px;
-  font-family: var(--mono);
 }
 .code-form .btn {
-  padding: 14px;
-  font-size: 16px;
+  padding: 15px;
+  font-size: 17px;
 }
 
 .error {
-  color: var(--flash);
-  font-size: 13px;
+  color: var(--red);
+  font-weight: 800;
+  font-size: 14px;
   text-align: center;
   margin: 0;
 }
 .loading {
-  color: var(--ink-dim);
+  margin: 0;
+  text-align: center;
+  font-weight: 800;
 }
 
 .media {
-  width: 100%;
-  max-width: 400px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
   align-items: center;
 }
 .code-label {
   margin: 0;
-  color: var(--ink-dim);
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 800;
 }
-.code-label span {
-  font-family: var(--mono);
-  color: var(--mint);
-  letter-spacing: 0.2em;
-}
-.media img {
-  border-radius: 12px;
-  border: 1px solid var(--curtain-hi);
-  background: var(--curtain);
-  display: block;
+.code-label .tag {
+  margin-left: 6px;
+  font-size: 20px;
+  letter-spacing: 0.08em;
 }
 #stripImg {
+  display: block;
   width: auto;
   max-width: 100%;
-  max-height: 72vh;
+  max-height: 70vh;
+  border-radius: 4px;
+  box-shadow: 0 10px 24px rgba(34, 52, 92, 0.3);
+}
+.gif-wrap {
+  width: 100%;
+  filter: drop-shadow(0 8px 16px rgba(58, 42, 38, 0.22));
+  transform: rotate(1.5deg);
 }
 #gifImg {
   width: 100%;
@@ -102,4 +124,5 @@ h1 {
 }
 .downloads .btn {
   padding: 14px;
+  font-size: 16px;
 }
