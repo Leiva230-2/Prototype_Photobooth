@@ -1,12 +1,28 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ALL_CELL_H,
+  ALL_CELL_W,
+  ALL_COLS,
+  ALL_FOOTER_Y,
+  ALL_GAP,
+  ALL_MARGIN,
+  BIG_CELL_H,
+  BIG_CELL_W,
+  BIG_COLS,
+  BIG_FOOTER_X,
+  BIG_H,
+  BIG_ROWS,
+  BIG_W,
   CELL_H,
+  CELL_W,
   FOOTER_Y,
   GAP,
   MARGIN_TOP,
+  MARGIN_X,
+  SHOTS,
   SHEET_H,
   SHEET_W,
-  SHOTS,
+  STRIP_SHOTS,
   STORY_H,
   STORY_W,
   STRIP_W,
@@ -18,9 +34,41 @@ describe('print geometry', () => {
     expect(SHEET_W).toBe(2 * STRIP_W);
   });
 
-  it('leaves room for the footer under four cells', () => {
-    expect(FOOTER_Y).toBe(MARGIN_TOP + SHOTS * CELL_H + (SHOTS - 1) * GAP);
-    expect(FOOTER_Y + 272).toBeLessThan(SHEET_H); // last footer line (the code)
+  it('matches the frame template: 520×340 holes at 40,43 with a 37 px gap', () => {
+    expect(2 * MARGIN_X + CELL_W).toBe(STRIP_W);
+    expect(MARGIN_TOP + 4 * CELL_H + 3 * GAP).toBe(1514);
+    expect(FOOTER_Y).toBe(MARGIN_TOP + STRIP_SHOTS * CELL_H + (STRIP_SHOTS - 1) * GAP);
+    expect(FOOTER_Y + 252).toBeLessThan(SHEET_H); // last footer line (the code)
+  });
+});
+
+describe('big print geometry', () => {
+  it('has landscape 3.5 × 2.55 cm cells at 300 dpi, edge to edge', () => {
+    const cm = (px: number) => (px / 300) * 2.54;
+    expect(cm(BIG_CELL_W)).toBeCloseTo(3.5, 1);
+    expect(cm(BIG_CELL_H)).toBeCloseTo(2.54, 1);
+    expect(BIG_CELL_W).toBeGreaterThan(BIG_CELL_H);
+  });
+
+  it('is the 4x6 sheet turned sideways, cut into two identical halves', () => {
+    expect(BIG_W).toBe(SHEET_H);
+    expect(BIG_H).toBe(SHEET_W);
+    expect(BIG_COLS * BIG_ROWS).toBe(SHOTS); // every photo once per half
+    expect(2 * BIG_ROWS * BIG_CELL_H).toBe(BIG_H); // the cut lands between the halves
+  });
+
+  it('leaves a footer column for the logo and code', () => {
+    expect(BIG_FOOTER_X).toBe(BIG_COLS * BIG_CELL_W);
+    expect(BIG_W - BIG_FOOTER_X).toBeGreaterThanOrEqual(140);
+  });
+});
+
+describe('digital all-photos sheet', () => {
+  it('fits 8 landscape photos in 2 columns across the sheet', () => {
+    expect(ALL_COLS * 4).toBe(SHOTS);
+    expect(2 * ALL_MARGIN + ALL_COLS * ALL_CELL_W + (ALL_COLS - 1) * ALL_GAP).toBe(SHEET_W);
+    expect(ALL_CELL_W / ALL_CELL_H).toBeCloseTo(1.5, 1);
+    expect(SHEET_H - ALL_FOOTER_Y).toBeGreaterThanOrEqual(200);
   });
 });
 

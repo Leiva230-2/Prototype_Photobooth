@@ -1,0 +1,16 @@
+{
+  "name": "Dearly Photobooth",
+  "short_name": "Dearly",
+  "start_url": "/guest.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#D6E2F3",
+  "theme_color": "#D6E2F3",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

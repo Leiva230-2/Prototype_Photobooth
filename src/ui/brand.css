@@ -1,0 +1,145 @@
+/*
+ * Dearly brand layer, taken from the Venture Creation deck:
+ * blue gingham, grainy cream paper, tan cards, deep red, and cream
+ * "sticker" lettering with a thick red outline.
+ * Fonts are bundled (no Google Fonts) so the booth looks right offline.
+ */
+@import '@fontsource/darumadrop-one/400.css';
+@import '@fontsource/beth-ellen/400.css';
+@import '@fontsource-variable/nunito/wght.css';
+
+:root {
+  --red: #9e2a2b;
+  --red-deep: #7c1f20;
+  --cream: #efe8df;
+  --paper: #ebe6de;
+  --tan: #e4d8c3;
+  --tan-deep: #d6c5a6;
+  --sticky: #f4ecb1;
+  --sky: #d6e2f3;
+  --check: rgba(84, 127, 204, 0.44);
+  --sky-deep: #7fa2dc;
+  --sky-mid: #a9c2e9;
+  --sky-light: #d3e0f3;
+  --sky-white: #f6f8fc;
+  --ink: #3a2a26;
+
+  --font-body: 'Darumadrop One', ui-rounded, system-ui, sans-serif;
+  --font-chunky: 'Darumadrop One', ui-rounded, system-ui, sans-serif;
+  --font-script: 'Beth Ellen', cursive;
+  /* Long reading text (paragraphs, hints) stays in Nunito so it's easy to read. */
+  --font-text: 'Nunito Variable', 'Nunito', ui-rounded, system-ui, sans-serif;
+
+  /* Paper grain: tiny noise tile, multiplied over the paper colour. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .27 0 0 0 0 .24 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Darumadrop One and Beth Ellen ship a single weight; never let the browser fake a bold. */
+html {
+  font-synthesis: none;
+}
+
+/* Long text: paragraphs, explanations and hints. */
+.long-text {
+  font-family: var(--font-text);
+}
+
+/* Blue gingham with the woven diagonal hatch from the deck. */
+.gingham {
+  background-color: var(--sky);
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 0 2px, transparent 2px 7px),
+    linear-gradient(90deg, var(--check) 50%, transparent 50%),
+    linear-gradient(var(--check) 50%, transparent 50%);
+  background-size:
+    auto,
+    var(--check-size, 104px) var(--check-size, 104px),
+    var(--check-size, 104px) var(--check-size, 104px);
+}
+
+/* The start screen only: the deck's blue fading to white, with a faint print grain. */
+.sky-bg {
+  background-color: var(--sky-white);
+  background-image:
+    var(--grain),
+    linear-gradient(180deg, var(--sky-deep) 0%, var(--sky-mid) 38%, var(--sky-light) 70%, var(--sky-white) 100%);
+}
+
+.paper {
+  background-color: var(--paper);
+  background-image: var(--grain);
+}
+
+/* Cream letters, fat red outline, slightly roughened edge. */
+.sticker {
+  font-family: var(--font-chunky);
+  font-weight: 400;
+  color: var(--cream);
+  -webkit-text-stroke: var(--stroke, 0.16em) var(--red);
+  paint-order: stroke fill;
+  line-height: 1;
+  letter-spacing: 0.005em;
+  filter: url(#dearly-rough);
+}
+.sticker--script {
+  font-family: var(--font-script);
+  --stroke: 0.14em;
+}
+
+/* Red label, like the "WEBSITE" tag on the About slide. */
+.tag {
+  display: inline-block;
+  background: var(--red);
+  color: var(--cream);
+  font-family: var(--font-chunky);
+  font-weight: 400;
+  line-height: 1;
+  padding: 0.38em 0.7em 0.42em;
+  border-radius: 3px;
+  box-shadow: 0 3px 0 var(--red-deep);
+}
+
+/* Yellow sticky note, like "PHOTO BOOTH". */
+.sticky {
+  background-color: var(--sticky);
+  background-image: var(--grain);
+  color: var(--ink);
+  box-shadow: 0 10px 22px rgba(40, 52, 80, 0.22);
+}
+
+/* Postage-stamp edge for photos and the QR code: scalloped border, solid middle.
+   Put a drop-shadow on a wrapper — a box-shadow here would be masked away. */
+.stamp {
+  --r: 6px;
+  background-color: var(--cream);
+  background-image: var(--grain);
+  padding: calc(var(--r) * 1.8);
+  -webkit-mask:
+    radial-gradient(var(--r) at var(--r) var(--r), #0000 97%, #000) calc(var(--r) * -1) calc(var(--r) * -1) /
+      calc(var(--r) * 3) calc(var(--r) * 3) round,
+    linear-gradient(#000 0 0) content-box;
+  mask:
+    radial-gradient(var(--r) at var(--r) var(--r), #0000 97%, #000) calc(var(--r) * -1) calc(var(--r) * -1) /
+      calc(var(--r) * 3) calc(var(--r) * 3) round,
+    linear-gradient(#000 0 0) content-box;
+}
+.stamp > * {
+  display: block;
+  border: 10px solid var(--cream);
+}
+
+/* Washi tape strip with torn ends. */
+.tape {
+  position: absolute;
+  width: 140px;
+  height: 38px;
+  background: rgba(228, 216, 195, 0.82);
+  clip-path: polygon(3% 0, 97% 4%, 100% 30%, 96% 60%, 99% 100%, 2% 96%, 0 70%, 4% 38%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.star {
+  display: block;
+  color: var(--red);
+  filter: url(#dearly-rough);
+}
