@@ -110,7 +110,7 @@ tests/                       unit test (Vitest)
 ## Desain (Dearly)
 
 Warna, font dan elemen dekorasi diambil dari deck Venture Creation dan ada di `src/ui/brand.css`:
-background biru ke putih, kertas krem, kartu tan, merah Dearly, huruf "stiker" krem dengan outline merah,
+background gingham biru (layar awal tablet: gradien biru ke putih dengan titik-titik putih), kertas krem, kartu tan, merah Dearly, huruf "stiker" krem dengan outline merah,
 label merah, sticky note kuning, perangko, dan bintang (`src/ui/Decor.tsx`).
 
 Font sudah dibundel lewat npm (tidak perlu internet saat event): **Titan One** (judul), **Damion**

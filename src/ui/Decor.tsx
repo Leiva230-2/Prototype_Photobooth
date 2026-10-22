@@ -49,3 +49,67 @@ export function Burst({ size = 120, style, className = '' }: { size?: number; st
     </svg>
   );
 }
+
+/** Small seeded PRNG: the confetti is "random" but identical on the tablet and the Mac mirror. */
+function seeded(seed: number): () => number {
+  let a = seed;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+interface Dot {
+  x: number;
+  y: number;
+  r: number;
+  o: number;
+}
+interface Sparkle {
+  x: number;
+  y: number;
+  s: number;
+  delay: number;
+}
+
+// Built once. Dots lean towards the top, where the blue is deep enough for white to show.
+const CONFETTI = (() => {
+  const rand = seeded(21);
+  const dots: Dot[] = Array.from({ length: 74 }, () => ({
+    x: rand() * 1280,
+    y: Math.pow(rand(), 1.35) * 760,
+    r: 2 + Math.pow(rand(), 2) * 6,
+    o: 0.45 + rand() * 0.45,
+  }));
+  const sparkles: Sparkle[] = [
+    { x: 520, y: 118, s: 22, delay: 0 },
+    { x: 712, y: 52, s: 16, delay: 0.9 },
+    { x: 1228, y: 168, s: 20, delay: 1.7 },
+    { x: 38, y: 330, s: 18, delay: 0.5 },
+    { x: 560, y: 520, s: 15, delay: 2.2 },
+    { x: 1036, y: 640, s: 24, delay: 1.3 },
+  ];
+  return { dots, sparkles };
+})();
+
+/** White dots and twinkling sparkles for the start screen, on a 1280×800 canvas. */
+export function Confetti() {
+  return (
+    <svg className="confetti" viewBox="0 0 1280 800" width="1280" height="800" aria-hidden="true">
+      {CONFETTI.dots.map((d, i) => (
+        <circle key={i} cx={d.x} cy={d.y} r={d.r} fill="#fff" opacity={d.o} />
+      ))}
+      {CONFETTI.sparkles.map((sp, i) => (
+        <path
+          key={`s${i}`}
+          className="confetti__sparkle"
+          style={{ animationDelay: `${sp.delay}s`, transformOrigin: `${sp.x}px ${sp.y}px` }}
+          fill="#fff"
+          d={`M${sp.x} ${sp.y - sp.s} Q${sp.x + sp.s * 0.16} ${sp.y - sp.s * 0.16} ${sp.x + sp.s} ${sp.y} Q${sp.x + sp.s * 0.16} ${sp.y + sp.s * 0.16} ${sp.x} ${sp.y + sp.s} Q${sp.x - sp.s * 0.16} ${sp.y + sp.s * 0.16} ${sp.x - sp.s} ${sp.y} Q${sp.x - sp.s * 0.16} ${sp.y - sp.s * 0.16} ${sp.x} ${sp.y - sp.s}Z`}
+        />
+      ))}
+    </svg>
+  );
+}

@@ -1,7 +1,8 @@
 @import './tokens.css';
 
-/* Guest gallery on phones: logo, then one paper card on the blue-to-white background. */
+/* Guest gallery on phones: logo, then one paper card on the gingham. */
 body.gallery {
+  --check-size: 72px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

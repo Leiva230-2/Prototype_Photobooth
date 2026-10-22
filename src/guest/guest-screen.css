@@ -48,7 +48,7 @@
   position: absolute;
 }
 
-/* Cream paper sheet floating on the blue background, like the deck's content slides. */
+/* Cream paper sheet floating on the gingham, like the deck's content slides. */
 .gs-sheet {
   position: absolute;
   border-radius: 4px;
@@ -757,5 +757,26 @@
   .gs *::after {
     animation-duration: 0.01ms !important;
     animation-delay: 0ms !important;
+  }
+}
+
+/* ---------- Start-screen confetti ---------- */
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.confetti__sparkle {
+  animation: gs-twinkle 2.8s ease-in-out infinite;
+}
+@keyframes gs-twinkle {
+  0%,
+  100% {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.6) rotate(20deg);
   }
 }

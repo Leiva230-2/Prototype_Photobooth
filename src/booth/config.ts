@@ -30,10 +30,8 @@ export const AFTER_SHOT_MS = 600;
 export const COLORS = {
   red: '#9E2A2B',
   cream: '#EFE8DF',
-  skyDeep: '#7FA2DC',
-  skyMid: '#A9C2E9',
-  skyLight: '#D3E0F3',
-  skyWhite: '#F6F8FC',
+  sky: '#D6E2F3',
+  check: 'rgba(84, 127, 204, 0.44)',
   shadow: 'rgba(34, 52, 92, 0.35)',
 } as const;
 

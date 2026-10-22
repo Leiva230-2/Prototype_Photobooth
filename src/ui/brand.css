@@ -1,6 +1,6 @@
 /*
  * Dearly brand layer, taken from the Venture Creation deck:
- * blue-to-white sky, grainy cream paper, tan cards, deep red, and cream
+ * blue gingham, grainy cream paper, tan cards, deep red, and cream
  * "sticker" lettering with a thick red outline.
  * Fonts are bundled (no Google Fonts) so the booth looks right offline.
  */
@@ -16,6 +16,8 @@
   --tan: #e4d8c3;
   --tan-deep: #d6c5a6;
   --sticky: #f4ecb1;
+  --sky: #d6e2f3;
+  --check: rgba(84, 127, 204, 0.44);
   --sky-deep: #7fa2dc;
   --sky-mid: #a9c2e9;
   --sky-light: #d3e0f3;
@@ -30,8 +32,20 @@
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .27 0 0 0 0 .24 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Background: the deck's blue fading to white, with a faint print grain so it
-   doesn't look like a flat web gradient. No stripes. */
+/* Blue gingham with the woven diagonal hatch from the deck. */
+.gingham {
+  background-color: var(--sky);
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 0 2px, transparent 2px 7px),
+    linear-gradient(90deg, var(--check) 50%, transparent 50%),
+    linear-gradient(var(--check) 50%, transparent 50%);
+  background-size:
+    auto,
+    var(--check-size, 104px) var(--check-size, 104px),
+    var(--check-size, 104px) var(--check-size, 104px);
+}
+
+/* The start screen only: the deck's blue fading to white, with a faint print grain. */
 .sky-bg {
   background-color: var(--sky-white);
   background-image:

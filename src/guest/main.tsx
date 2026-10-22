@@ -81,7 +81,7 @@ function GuestApp() {
         onIntent={(intent) => link.current?.send({ type: 'intent', intent })}
       />
       {!online && (
-        <div className="guest-offline sky-bg">
+        <div className="guest-offline gingham">
           <div className="guest-offline__card paper">
             <h1 className="sticker">Sebentar ya…</h1>
             <p>

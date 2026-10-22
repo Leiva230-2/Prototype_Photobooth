@@ -126,21 +126,30 @@ export function buildSheet(strip: HTMLCanvasElement): HTMLCanvasElement {
   return c;
 }
 
-/** Brand background: the deck's blue fading down to white. */
-function drawSky(ctx: CanvasRenderingContext2D, w: number, h: number): void {
-  const g = ctx.createLinearGradient(0, 0, 0, h);
-  g.addColorStop(0, COLORS.skyDeep);
-  g.addColorStop(0.38, COLORS.skyMid);
-  g.addColorStop(0.7, COLORS.skyLight);
-  g.addColorStop(1, COLORS.skyWhite);
-  ctx.fillStyle = g;
+/** Blue gingham like the brand background: overlapping half-transparent stripes. */
+function drawGingham(ctx: CanvasRenderingContext2D, w: number, h: number, size: number): void {
+  ctx.fillStyle = COLORS.sky;
   ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = COLORS.check;
+  for (let x = 0; x < w; x += size) ctx.fillRect(x, 0, size / 2, h);
+  for (let y = 0; y < h; y += size) ctx.fillRect(0, y, w, size / 2);
+  // Fine diagonal weave.
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let d = -h; d < w; d += 7) {
+    ctx.moveTo(d, h);
+    ctx.lineTo(d + h, 0);
+  }
+  ctx.stroke();
+  ctx.restore();
 }
 
-/** 9:16 story image: the strip, slightly tilted, on the Dearly blue background. */
+/** 9:16 story image: the strip, slightly tilted, on the Dearly gingham. */
 export function buildStory(strip: HTMLCanvasElement): HTMLCanvasElement {
   const [c, ctx] = canvas(STORY_W, STORY_H);
-  drawSky(ctx, STORY_W, STORY_H);
+  drawGingham(ctx, STORY_W, STORY_H, 150);
   const r = containRect(STRIP_W, SHEET_H, STORY_W, STORY_H, 0.86);
   ctx.save();
   ctx.translate(STORY_W / 2, STORY_H / 2);

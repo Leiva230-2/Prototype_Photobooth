@@ -3,7 +3,7 @@ import { DECKS, type DeckId } from '../booth/config';
 import { FRAMES, frameById, odds, type FrameStyle } from '../booth/gacha';
 import type { GuestIntent } from '../shared/link-protocol';
 import type { GuestView } from '../shared/view';
-import { Burst, RoughFilter, Star } from '../ui/Decor';
+import { Burst, Confetti, RoughFilter, Star } from '../ui/Decor';
 import { useQr } from '../ui/useQr';
 import '../ui/brand.css';
 import './guest-screen.css';
@@ -25,7 +25,7 @@ interface Props {
  */
 export function GuestScreen({ view, preview, onIntent }: Props) {
   return (
-    <div className={`gs sky-bg gs--${view.phase}`}>
+    <div className={`gs ${view.phase === 'idle' ? 'sky-bg' : 'gingham'} gs--${view.phase}`}>
       <RoughFilter />
       {view.phase === 'idle' && <Attract preview={preview} onStart={() => onIntent({ type: 'start' })} />}
       {view.phase === 'deck' && (
@@ -73,6 +73,7 @@ function Attract({ preview, onStart }: { preview: ReactNode; onStart(): void }) 
   const pct = odds(FRAMES);
   return (
     <div className="gs-attract" onClick={onStart}>
+      <Confetti />
       <Burst size={150} className="gs-attract__burst" />
       <Star size={42} className="gs-attract__star1" />
       <Star size={30} className="gs-attract__star2" />

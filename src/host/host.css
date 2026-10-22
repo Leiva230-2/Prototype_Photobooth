@@ -6,6 +6,8 @@ body,
 }
 body {
   overflow: hidden;
+  --check-size: 64px;
+  --check: rgba(84, 127, 204, 0.26);
 }
 
 .console {
