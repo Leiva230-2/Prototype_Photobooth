@@ -135,12 +135,14 @@ body {
   color: var(--red);
 }
 .hint {
+  font-family: var(--font-text);
   margin: 10px 0 0;
   font-size: 12.5px;
   line-height: 1.45;
   color: var(--text-dim);
 }
 .empty {
+  font-family: var(--font-text);
   margin: 4px 0;
   font-size: 13px;
   color: var(--text-dim);

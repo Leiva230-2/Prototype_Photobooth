@@ -62,9 +62,9 @@ function drawCover(
 export async function ensureFonts(): Promise<void> {
   try {
     await Promise.all([
-      document.fonts.load(`400 92px ${FONTS.script}`),
+      document.fonts.load(`400 62px ${FONTS.script}`),
       document.fonts.load(`400 34px ${FONTS.chunky}`),
-      document.fonts.load(`700 24px ${FONTS.body}`),
+      document.fonts.load(`400 24px ${FONTS.body}`),
     ]);
   } catch {
     // Fonts are bundled, so this only fails in very old browsers; the fallback is fine.
@@ -98,10 +98,10 @@ function drawStrip(
   const maxW = STRIP_W - 2 * MARGIN_X;
   const date = info.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
   const lines: [string, string, string, number][] = [
-    ['Dearly', frame.ink, `400 86px ${FONTS.script}`, 88],
+    ['Dearly', frame.ink, `400 62px ${FONTS.script}`, 82],
     ['Photobooth', frame.accent, `400 32px ${FONTS.chunky}`, 132],
-    [date, frame.dim, `700 22px ${FONTS.body}`, 174],
-    [info.eventName, frame.dim, `800 20px ${FONTS.body}`, 206],
+    [date, frame.dim, `400 22px ${FONTS.body}`, 174],
+    [info.eventName, frame.dim, `400 20px ${FONTS.body}`, 206],
     [`Kode ${info.code}`, frame.ink, `400 28px ${FONTS.chunky}`, 252],
   ];
   ctx.textAlign = 'center';
@@ -160,11 +160,11 @@ export function buildBigPrint(
 
     // Footer column, stacked and centred in this half.
     const lines: [string, string, string, number][] = [
-      ['Dearly', frame.ink, `400 46px ${FONTS.script}`, 236],
+      ['Dearly', frame.ink, `400 34px ${FONTS.script}`, 232],
       ['Photobooth', frame.accent, `400 16px ${FONTS.chunky}`, 264],
-      [date, frame.dim, `700 15px ${FONTS.body}`, 306],
-      [info.eventName, frame.dim, `800 12px ${FONTS.body}`, 328],
-      ['Kode', frame.dim, `700 13px ${FONTS.body}`, 362],
+      [date, frame.dim, `400 15px ${FONTS.body}`, 306],
+      [info.eventName, frame.dim, `400 12px ${FONTS.body}`, 328],
+      ['Kode', frame.dim, `400 13px ${FONTS.body}`, 362],
       [info.code, frame.ink, `400 20px ${FONTS.chunky}`, 386],
     ];
     ctx.textAlign = 'center';
@@ -214,10 +214,10 @@ export function buildAllSheet(
   const right = (SHEET_W * 3) / 4;
   const date = info.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
   const lines: [string, string, string, number, number][] = [
-    ['Dearly', frame.ink, `400 96px ${FONTS.script}`, left, 108],
+    ['Dearly', frame.ink, `400 70px ${FONTS.script}`, left, 100],
     ['Photobooth', frame.accent, `400 36px ${FONTS.chunky}`, left, 166],
-    [date, frame.dim, `700 26px ${FONTS.body}`, right, 84],
-    [info.eventName, frame.dim, `800 22px ${FONTS.body}`, right, 120],
+    [date, frame.dim, `400 26px ${FONTS.body}`, right, 84],
+    [info.eventName, frame.dim, `400 22px ${FONTS.body}`, right, 120],
     [`Kode ${info.code}`, frame.ink, `400 32px ${FONTS.chunky}`, right, 168],
   ];
   ctx.textAlign = 'center';

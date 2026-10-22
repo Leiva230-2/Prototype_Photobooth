@@ -122,8 +122,9 @@ Warna, font dan elemen dekorasi diambil dari deck Venture Creation dan ada di `s
 background gingham biru (layar awal tablet: gradien biru ke putih dengan titik-titik putih), kertas krem, kartu tan, merah Dearly, huruf "stiker" krem dengan outline merah,
 label merah, sticky note kuning, perangko, dan bintang (`src/ui/Decor.tsx`).
 
-Font sudah dibundel lewat npm (tidak perlu internet saat event): **Titan One** (judul), **Damion**
-(tulisan "Dearly") dan **Nunito** (teks). Kalau tahu font asli dari Canva, ganti di bagian atas
+Font sudah dibundel lewat npm (tidak perlu internet saat event): **Beth Ellen** (tulisan sambung,
+mis. "Dearly") dan **Darumadrop One** (judul, tombol, label) dan **Nunito** (teks panjang seperti paragraf dan petunjuk).
+Teks panjang baru tinggal diberi class `long-text`. Untuk ganti font, ubah bagian atas
 `brand.css` dan di `FONTS` pada `src/booth/config.ts` (dipakai untuk strip cetak).
 
 ## Mengubah gacha

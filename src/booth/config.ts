@@ -68,9 +68,9 @@ export const COLORS = {
 
 /** Bundled fonts (see src/ui/brand.css). Canvas needs them loaded first: see ensureFonts(). */
 export const FONTS = {
-  body: '"Nunito Variable", "Nunito", system-ui, sans-serif',
-  chunky: '"Titan One", system-ui, sans-serif',
-  script: '"Damion", cursive',
+  body: '"Darumadrop One", system-ui, sans-serif',
+  chunky: '"Darumadrop One", system-ui, sans-serif',
+  script: '"Beth Ellen", cursive',
 } as const;
 
 export interface Deck {

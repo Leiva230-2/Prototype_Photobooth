@@ -18,9 +18,10 @@ body.gallery {
   margin-bottom: 18px;
 }
 .logo__script {
-  font-size: 78px;
-  line-height: 0.85;
-  transform: rotate(-7deg) translateX(-14px);
+  font-size: 60px;
+  line-height: 1;
+  margin-bottom: 16px;
+  transform: rotate(-6deg) translateX(-10px);
   position: relative;
   z-index: 1;
 }
@@ -38,6 +39,7 @@ body.gallery {
 }
 
 .hint {
+  font-family: var(--font-text);
   font-size: 14px;
   font-weight: 700;
   color: var(--text-dim);

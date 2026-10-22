@@ -4,8 +4,8 @@
  * "sticker" lettering with a thick red outline.
  * Fonts are bundled (no Google Fonts) so the booth looks right offline.
  */
-@import '@fontsource/titan-one/400.css';
-@import '@fontsource/damion/400.css';
+@import '@fontsource/darumadrop-one/400.css';
+@import '@fontsource/beth-ellen/400.css';
 @import '@fontsource-variable/nunito/wght.css';
 
 :root {
@@ -24,12 +24,24 @@
   --sky-white: #f6f8fc;
   --ink: #3a2a26;
 
-  --font-body: 'Nunito Variable', 'Nunito', ui-rounded, system-ui, sans-serif;
-  --font-chunky: 'Titan One', 'Nunito Variable', system-ui, sans-serif;
-  --font-script: 'Damion', cursive;
+  --font-body: 'Darumadrop One', ui-rounded, system-ui, sans-serif;
+  --font-chunky: 'Darumadrop One', ui-rounded, system-ui, sans-serif;
+  --font-script: 'Beth Ellen', cursive;
+  /* Long reading text (paragraphs, hints) stays in Nunito so it's easy to read. */
+  --font-text: 'Nunito Variable', 'Nunito', ui-rounded, system-ui, sans-serif;
 
   /* Paper grain: tiny noise tile, multiplied over the paper colour. */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .32 0 0 0 0 .27 0 0 0 0 .24 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Darumadrop One and Beth Ellen ship a single weight; never let the browser fake a bold. */
+html {
+  font-synthesis: none;
+}
+
+/* Long text: paragraphs, explanations and hints. */
+.long-text {
+  font-family: var(--font-text);
 }
 
 /* Blue gingham with the woven diagonal hatch from the deck. */

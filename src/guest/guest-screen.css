@@ -148,10 +148,11 @@
   flex-direction: column;
 }
 .gs-logo__script {
-  font-size: 168px;
-  line-height: 0.82;
-  margin-left: 76px;
-  transform: rotate(-7deg);
+  /* Beth Ellen runs tall with a deep "y" tail; keep it clear of the word below. */
+  font-size: 124px;
+  line-height: 1;
+  margin: 0 0 34px 64px;
+  transform: rotate(-6deg);
   position: relative;
   z-index: 1;
 }
@@ -664,6 +665,7 @@
   font-size: 70px;
 }
 .gs-pending__card p {
+  font-family: var(--font-text);
   margin: 16px 0 26px;
   font-size: 23px;
   font-weight: 700;
@@ -894,6 +896,7 @@
   font-size: 84px;
 }
 .gs-result__copy {
+  font-family: var(--font-text);
   margin-top: 18px;
   max-width: 560px;
   font-size: 23px;
