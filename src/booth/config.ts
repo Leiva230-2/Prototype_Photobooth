@@ -19,15 +19,19 @@ export const STRIP_SHOTS = 4;
 export const FOOTER_Y = MARGIN_TOP + STRIP_SHOTS * CELL_H + (STRIP_SHOTS - 1) * GAP; // 1514
 
 /**
- * Big print: 4×4 portrait cells of 2.55 × 3.5 cm (300 × 414 px), edge to edge.
- * The left half holds all 8 photos and the right half repeats them, so the
- * sheet is cut down the middle like a strip sheet: two identical sets.
+ * Big print: 16 landscape cells of 3.5 × 2.55 cm (414 × 300 px), edge to edge.
+ * It is laid out on a landscape 6x4" canvas (1800 × 1200) as two identical
+ * halves, top and bottom: 4 columns × 2 rows of the 8 photos each, with the
+ * logo and code in a narrow footer on the right. For printing the canvas is
+ * turned 90°, so the printer's 2x6 cut runs between the two halves.
  */
+export const BIG_W = 1800;
+export const BIG_H = 1200;
 export const BIG_COLS = 4;
-export const BIG_ROWS = 4;
-export const BIG_CELL_W = 300;
-export const BIG_CELL_H = 414;
-export const BIG_FOOTER_Y = BIG_ROWS * BIG_CELL_H; // 1656
+export const BIG_ROWS = 2; // per half
+export const BIG_CELL_W = 414;
+export const BIG_CELL_H = 300;
+export const BIG_FOOTER_X = BIG_COLS * BIG_CELL_W; // 1656
 
 /**
  * Digital "all photos" sheet (every guest gets it): 8 landscape photos,

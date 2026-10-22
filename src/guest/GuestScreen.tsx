@@ -163,10 +163,6 @@ function Capture({ view, preview }: { view: GuestView; preview: ReactNode }) {
       {/* The window is exactly 3:2 — the shape of each photo on the strip. */}
       <div className="gs-capture__window">
         <div className="gs-capture__live">{preview}</div>
-        {/* What the small portrait photos of the big print keep (centre crop). */}
-        <div className="gs-capture__guide" aria-hidden="true">
-          <span>Area foto kecil</span>
-        </div>
         {view.count !== null && (
           <div className="gs-count sticker" key={`${view.shot}-${view.count}`}>
             {view.count}

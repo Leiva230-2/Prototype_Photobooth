@@ -25,17 +25,17 @@ file statis di mana saja.
 - Pilih gaya: Bestie, Couple, Chaos, Corporate, Anak Kuliahan
 - **8 foto** dengan arahan pose, countdown, dan flash (8 arahan berbeda per gaya)
 - **Pilih 4 foto** favorit untuk strip (tap di tablet). Kalau 45 detik tidak selesai, otomatis dipakai foto paling awal
-- **Upsell versi besar**: tombol "Suka semua?" mencetak semua 8 foto ukuran kecil (2,55 × 3,5 cm), 2 set.
-  Tablet menunggu sampai kasir menekan **Sudah bayar, cetak versi besar** di Mac (atau "Batal upgrade").
-  Garis putus-putus di layar foto menunjukkan area yang masuk ke foto kecil (crop portrait di tengah)
+- **Upsell versi besar**: tombol "Suka semua?" mencetak semua 8 foto ukuran kecil landscape (3,5 × 2,55 cm), 2 set.
+  Tablet menunggu sampai kasir menekan **Sudah bayar, cetak versi besar** di Mac (atau "Batal upgrade")
 - **Gacha frame** dengan animasi kapsul: Hitam, Putih, Ungu, Coklat (peluang sama, 25%)
 - Hasil: strip, frame, QR code ke galeri, kode sesi
 - Layar penuh otomatis saat disentuh, layar tidak mati selama dipakai
 
 **Proses foto**
 - Lembar cetak 1200×1800 (300dpi). Strip: 2 strip identik berisi 4 foto pilihan, posisi foto sama dengan template
-  frame (lubang 520×340 di x40, y43, jarak 37). Versi besar: grid 4×4 foto portrait 300×414 (2,55 × 3,5 cm),
-  kiri 8 foto dan kanan 8 foto yang sama. Versi digital 8 foto: grid landscape 2×4.
+  frame (lubang 520×340 di x40, y43, jarak 37). Versi besar: 16 foto landscape 414×300 (3,5 × 2,55 cm), dua bagian identik
+  berisi 8 foto (4 kolom × 2 baris) dengan logo di samping; di file cetak isinya diputar 90° supaya potongan 2x6
+  printer jatuh di antara dua bagian. Versi digital 8 foto: grid landscape 2×4.
   Story 1080×1920, GIF 8 frame 480×320, warna sesuai frame gacha
 - Kode sesi 6 karakter dicetak di strip (tanpa huruf yang mirip seperti 0/O dan 1/I/L)
 - Upload ke Cloudinary; kalau cloud belum diatur atau upload gagal, file di-download lokal

@@ -9,8 +9,10 @@ import {
   BIG_CELL_H,
   BIG_CELL_W,
   BIG_COLS,
-  BIG_FOOTER_Y,
+  BIG_FOOTER_X,
+  BIG_H,
   BIG_ROWS,
+  BIG_W,
   CELL_H,
   CELL_W,
   COLORS,
@@ -130,47 +132,61 @@ export function shotThumbnail(shot: HTMLCanvasElement, width = 360): string {
 }
 
 /**
- * Big print: 4×4 portrait cells (2.55 × 3.5 cm), edge to edge. The left half
- * holds all 8 shots and the right half repeats them, so the sheet is cut down
- * the middle like a strip sheet. Each half gets its own footer.
+ * Big print, upright: a landscape 1800 × 1200 canvas with two identical halves
+ * (top and bottom). Each half has the 8 shots in 4 columns × 2 rows of
+ * 3.5 × 2.55 cm cells and a narrow footer on the right. Use this for screens;
+ * printForBig() turns it for the printer.
  */
 export function buildBigPrint(
   shots: HTMLCanvasElement[],
   info: StripInfo,
   frame: FrameStyle,
 ): HTMLCanvasElement {
-  const [c, ctx] = canvas(SHEET_W, SHEET_H);
+  const [c, ctx] = canvas(BIG_W, BIG_H);
   ctx.fillStyle = frame.bg;
-  ctx.fillRect(0, 0, SHEET_W, SHEET_H);
-  const half = BIG_COLS / 2;
+  ctx.fillRect(0, 0, BIG_W, BIG_H);
+  const halfH = BIG_H / 2;
   const date = info.date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+  const fx = BIG_FOOTER_X + (BIG_W - BIG_FOOTER_X) / 2;
+  const maxW = BIG_W - BIG_FOOTER_X - 14;
 
-  for (const ox of [0, STRIP_W]) {
+  for (const oy of [0, halfH]) {
     shots.forEach((shot, i) => {
-      const x = ox + (i % half) * BIG_CELL_W;
-      const y = Math.floor(i / half) * BIG_CELL_H;
-      if (y >= BIG_ROWS * BIG_CELL_H) return;
+      if (i >= BIG_COLS * BIG_ROWS) return;
+      const x = (i % BIG_COLS) * BIG_CELL_W;
+      const y = oy + Math.floor(i / BIG_COLS) * BIG_CELL_H;
       drawCover(ctx, shot, x, y, BIG_CELL_W, BIG_CELL_H);
     });
 
-    // Footer: logo on the left, date / event / code on the right of this half.
-    const l = ox + 170;
-    const r = ox + 432;
-    const lines: [string, string, string, number, number][] = [
-      ['Dearly', frame.ink, `400 58px ${FONTS.script}`, l, 66],
-      ['Photobooth', frame.accent, `400 22px ${FONTS.chunky}`, l, 100],
-      [date, frame.dim, `700 19px ${FONTS.body}`, r, 50],
-      [info.eventName, frame.dim, `800 15px ${FONTS.body}`, r, 76],
-      [`Kode ${info.code}`, frame.ink, `400 22px ${FONTS.chunky}`, r, 110],
+    // Footer column, stacked and centred in this half.
+    const lines: [string, string, string, number][] = [
+      ['Dearly', frame.ink, `400 46px ${FONTS.script}`, 236],
+      ['Photobooth', frame.accent, `400 16px ${FONTS.chunky}`, 264],
+      [date, frame.dim, `700 15px ${FONTS.body}`, 306],
+      [info.eventName, frame.dim, `800 12px ${FONTS.body}`, 328],
+      ['Kode', frame.dim, `700 13px ${FONTS.body}`, 362],
+      [info.code, frame.ink, `400 20px ${FONTS.chunky}`, 386],
     ];
     ctx.textAlign = 'center';
-    for (const [text, color, font, x, dy] of lines) {
+    for (const [text, color, font, dy] of lines) {
       if (!text) continue;
       ctx.fillStyle = color;
       ctx.font = font;
-      ctx.fillText(text, x, BIG_FOOTER_Y + dy, 250);
+      ctx.fillText(text, fx, oy + dy, maxW);
     }
   }
+  return c;
+}
+
+/**
+ * The big print turned 90° onto the portrait 4x6 sheet the printer expects,
+ * so its 2x6 cut runs between the two identical halves.
+ */
+export function printForBig(big: HTMLCanvasElement): HTMLCanvasElement {
+  const [c, ctx] = canvas(SHEET_W, SHEET_H);
+  ctx.translate(SHEET_W, 0);
+  ctx.rotate(Math.PI / 2);
+  ctx.drawImage(big, 0, 0);
   return c;
 }
 

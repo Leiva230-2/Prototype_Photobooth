@@ -387,31 +387,6 @@
 .gs-capture__live > video.is-mirrored {
   transform: scaleX(-1);
 }
-/* Portrait centre crop used by the big print's 2.55 × 3.5 cm cells (300:414). */
-.gs-capture__guide {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 530px;
-  transform: translateX(-50%);
-  border-left: 3px dashed rgba(239, 232, 223, 0.55);
-  border-right: 3px dashed rgba(239, 232, 223, 0.55);
-  pointer-events: none;
-}
-.gs-capture__guide span {
-  position: absolute;
-  left: 50%;
-  bottom: 54px;
-  transform: translateX(-50%);
-  padding: 3px 10px 4px;
-  border-radius: 99px;
-  background: rgba(36, 31, 29, 0.45);
-  color: var(--cream);
-  font-size: 14px;
-  font-weight: 800;
-  white-space: nowrap;
-}
 .gs-prompt {
   position: absolute;
   left: 50%;
@@ -869,13 +844,13 @@
   height: 684px;
   width: auto;
 }
-/* Big print: the whole 2×4 sheet instead of a strip. */
+/* Big print: the landscape sheet (two sets of 8 small photos) instead of a strip. */
 .gs-result--big .gs-result__strip {
-  left: 64px;
-  top: 92px;
+  left: 46px;
+  top: 214px;
 }
 .gs-result--big .gs-result__strip img {
-  width: 400px;
+  width: 448px;
   height: auto;
 }
 .gs-result--big .gs-result__card {

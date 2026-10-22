@@ -9,8 +9,10 @@ import {
   BIG_CELL_H,
   BIG_CELL_W,
   BIG_COLS,
-  BIG_FOOTER_Y,
+  BIG_FOOTER_X,
+  BIG_H,
   BIG_ROWS,
+  BIG_W,
   CELL_H,
   CELL_W,
   FOOTER_Y,
@@ -41,17 +43,23 @@ describe('print geometry', () => {
 });
 
 describe('big print geometry', () => {
-  it('has 2.55 × 3.5 cm cells at 300 dpi, edge to edge', () => {
+  it('has landscape 3.5 × 2.55 cm cells at 300 dpi, edge to edge', () => {
     const cm = (px: number) => (px / 300) * 2.54;
-    expect(cm(BIG_CELL_W)).toBeCloseTo(2.54, 1);
-    expect(cm(BIG_CELL_H)).toBeCloseTo(3.5, 1);
-    expect(BIG_COLS * BIG_CELL_W).toBe(SHEET_W);
+    expect(cm(BIG_CELL_W)).toBeCloseTo(3.5, 1);
+    expect(cm(BIG_CELL_H)).toBeCloseTo(2.54, 1);
+    expect(BIG_CELL_W).toBeGreaterThan(BIG_CELL_H);
   });
 
-  it('fits every photo once in each half, with room for the footer', () => {
-    expect((BIG_COLS / 2) * BIG_ROWS).toBe(SHOTS);
-    expect(BIG_FOOTER_Y).toBe(BIG_ROWS * BIG_CELL_H);
-    expect(SHEET_H - BIG_FOOTER_Y).toBeGreaterThanOrEqual(140);
+  it('is the 4x6 sheet turned sideways, cut into two identical halves', () => {
+    expect(BIG_W).toBe(SHEET_H);
+    expect(BIG_H).toBe(SHEET_W);
+    expect(BIG_COLS * BIG_ROWS).toBe(SHOTS); // every photo once per half
+    expect(2 * BIG_ROWS * BIG_CELL_H).toBe(BIG_H); // the cut lands between the halves
+  });
+
+  it('leaves a footer column for the logo and code', () => {
+    expect(BIG_FOOTER_X).toBe(BIG_COLS * BIG_CELL_W);
+    expect(BIG_W - BIG_FOOTER_X).toBeGreaterThanOrEqual(140);
   });
 });
 

@@ -2,6 +2,7 @@ import QRCode from 'qrcode';
 import { Camera } from '../booth/camera';
 import {
   buildAllSheet,
+  printForBig,
   buildBigPrint,
   buildGif,
   buildSheet,
@@ -325,10 +326,12 @@ export class BoothController {
 
     // Every guest gets all 8 photos digitally, uncropped.
     const all = buildAllSheet(shots, info, style);
-    // Printed: the strip with the 4 picks (twice), or the big 4×4 sheet (all 8, twice).
+    // Printed: the strip with the 4 picks (twice), or the big sheet with all 8 small
+    // landscape photos (twice). `shown` is the upright version for screens and the story.
     const strip = pkg === 'big' ? null : buildStrip(chosen.map((i) => shots[i]), info, style);
-    const print = strip ? buildSheet(strip) : buildBigPrint(shots, info, style);
-    const shown = strip ?? print;
+    const big = strip ? null : buildBigPrint(shots, info, style);
+    const print = strip ? buildSheet(strip) : printForBig(big!);
+    const shown = strip ?? big!;
 
     const [sheetBlob, storyBlob, allBlob] = await Promise.all([
       toJpeg(print),
